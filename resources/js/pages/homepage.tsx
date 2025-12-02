@@ -112,6 +112,18 @@ function HomepageContent() {
         toast.success(`${product.name} added to cart!`);
     };
 
+    // Convert PHP to USD (approximate rate: 1 USD = 56 PHP)
+    const convertPrice = (price: number) => {
+        if (language === 'EN') {
+            return (price / 56).toFixed(2);
+        }
+        return price;
+    };
+
+    const getCurrencySymbol = () => {
+        return language === 'EN' ? '$' : '₱';
+    };
+
     return (
         <>
             <Head title="Coffee Shop - Cafe Rencontre" />
@@ -223,7 +235,8 @@ function HomepageContent() {
                             {products.map((product) => (
                                 <div
                                     key={product.id}
-                                    className="group mx-2.5 my-5 w-full max-w-[600px] overflow-hidden bg-card"
+                                    className="group mx-2.5 my-5 w-full max-w-[600px] cursor-pointer overflow-hidden bg-card transition-transform"
+                                    onClick={() => handleAddToCart(product)}
                                 >
                                     {/* Product Image - Maintains aspect ratio */}
                                     <div className="aspect-[600/756] w-full overflow-hidden bg-muted">
@@ -239,32 +252,26 @@ function HomepageContent() {
                                         <div className="flex items-start justify-between gap-4 md:gap-8 lg:gap-12">
                                             {/* Left side: Title and Description */}
                                             <div className="min-w-0 flex-1">
-                                                <h3 className="truncate text-2xl leading-tight font-extrabold text-card-foreground">
+                                                <h3 className="truncate text-2xl leading-tight font-extrabold text-card-foreground select-none">
                                                     {product.name}
                                                 </h3>
-                                                <p className="ml-0.2 mt-1 line-clamp-2 text-lg leading-tight font-medium text-muted-foreground lowercase">
+                                                <p className="ml-0.2 mt-1 line-clamp-2 text-lg leading-tight font-medium text-muted-foreground lowercase select-none">
                                                     {product.description}
                                                 </p>
                                             </div>
 
                                             {/* Right side: Price */}
-                                            <div className="flex-shrink-0 self-end">
-                                                <span className="text-lg font-bold whitespace-nowrap text-primary">
-                                                    ₱{product.price}
+                                            <div className="relative flex-shrink-0 self-end">
+                                                <span className="relative z-10 text-lg font-bold whitespace-nowrap text-primary select-none">
+                                                    {getCurrencySymbol()}
+                                                    {convertPrice(
+                                                        product.price,
+                                                    )}
                                                 </span>
+                                                {/* Slider animation under price */}
+                                                <div className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
                                             </div>
                                         </div>
-
-                                        {/* Add to Cart Button */}
-                                        {/* <Button
-                                            className="w-full"
-                                            onClick={() =>
-                                                handleAddToCart(product)
-                                            }
-                                        >
-                                            <ShoppingCart className="mr-2 h-4 w-4" />
-                                            Add to Cart
-                                        </Button> */}
                                     </div>
                                 </div>
                             ))}

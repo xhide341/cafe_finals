@@ -1,6 +1,6 @@
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { GuestMenuContent } from '@/components/guest-menu-content';
-// ReceiptDialog module not found — using a local fallback defined below
+import { ReceiptDialog } from '@/components/receipt-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -276,42 +276,6 @@ function CartContent() {
                 onOpenChange={setReceiptDialogOpen}
             />
         </>
-    );
-}
-
-/**
- * Local fallback for ReceiptDialog — lightweight modal used when
- * '@/components/receipt-dialog' is not available.
- * Props: open (boolean), onOpenChange (setter)
- */
-function ReceiptDialog({
-    open,
-    onOpenChange,
-}: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-}) {
-    if (!open) return null;
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div
-                className="absolute inset-0 bg-black/50"
-                onClick={() => onOpenChange(false)}
-            />
-            <div className="relative z-10 w-full max-w-md rounded bg-card p-6">
-                <h3 className="mb-4 text-lg font-bold text-card-foreground">
-                    Receipt
-                </h3>
-                <p className="mb-4 text-sm text-muted-foreground">
-                    This is a placeholder receipt dialog. Replace with your
-                    app-specific ReceiptDialog implementation when available.
-                </p>
-                <div className="flex justify-end">
-                    <Button onClick={() => onOpenChange(false)}>Close</Button>
-                </div>
-            </div>
-        </div>
     );
 }
 
