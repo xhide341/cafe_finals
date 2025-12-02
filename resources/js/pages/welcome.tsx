@@ -195,7 +195,7 @@ export default function Welcome({
                 {/* Header/Navigation - Hidden during intro, fades in after animation */}
                 <header
                     ref={headerRef}
-                    className="fixed top-0 right-0 left-0 z-50 w-full border-b-2 border-primary bg-[#F5F1E8]"
+                    className="fixed top-0 right-0 left-0 z-50 w-full border-b-2 border-[#593A2F] bg-[#F5F1E8]"
                 >
                     <div className="mx-auto w-full px-20 py-5">
                         <div className="flex items-center justify-between">
@@ -204,7 +204,7 @@ export default function Welcome({
                                 <img
                                     src="https://placehold.co/60x60/8B7355/F5F1E8?text=Logo"
                                     alt="Cafe Logo"
-                                    className="h-12 w-12 rounded-full border-2 border-primary shadow-md"
+                                    className="h-12 w-12 rounded-full border-2 border-[#593A2F] shadow-md"
                                     style={{ objectFit: 'cover' }}
                                 />
                             </div>
@@ -213,25 +213,25 @@ export default function Welcome({
                             <nav className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-6">
                                 <Link
                                     href="#about"
-                                    className="text-lg font-medium text-primary hover:text-[#6B5444]"
+                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
                                 >
                                     About
                                 </Link>
                                 <Link
                                     href="#stores"
-                                    className="text-lg font-medium text-primary hover:text-[#6B5444]"
+                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
                                 >
                                     Stores
                                 </Link>
                                 <Link
                                     href="#collaborations"
-                                    className="text-lg font-medium text-primary hover:text-[#6B5444]"
+                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
                                 >
                                     Collaborations
                                 </Link>
                                 <Link
                                     href="#contact"
-                                    className="text-lg font-medium text-primary hover:text-[#6B5444]"
+                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
                                 >
                                     Contact
                                 </Link>
@@ -241,7 +241,7 @@ export default function Welcome({
                                 {auth.user ? (
                                     <Link
                                         href={dashboard()}
-                                        className="rounded-full border-2 border-primary bg-primary px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-primary"
+                                        className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
                                     >
                                         Dashboard
                                     </Link>
@@ -249,14 +249,14 @@ export default function Welcome({
                                     <>
                                         <Link
                                             href={login()}
-                                            className="px-6 py-2 font-medium text-primary transition-colors hover:text-[#6B5444]"
+                                            className="px-6 py-2 font-medium text-[#593A2F] transition-colors hover:text-[#6B5444]"
                                         >
                                             Log in
                                         </Link>
                                         {canRegister && (
                                             <Link
                                                 href={register()}
-                                                className="rounded-full border-2 border-primary bg-primary px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-primary"
+                                                className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
                                             >
                                                 Register
                                             </Link>
@@ -289,9 +289,9 @@ export default function Welcome({
                         {/* Logo and Title at Top */}
 
                         {/* Hero Badge */}
-                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-primary/50 bg-primary/10 px-4 py-2">
-                            <Award className="h-5 w-5 text-primary" />
-                            <span className="text-sm font-semibold tracking-wide text-primary uppercase">
+                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-[#593A2F]/50 bg-[#593A2F]/10 px-4 py-2">
+                            <Award className="h-5 w-5 text-[#593A2F]" />
+                            <span className="text-sm font-semibold tracking-wide text-[#593A2F] uppercase">
                                 Award-Winning Specialty Coffee
                             </span>
                         </div>
@@ -300,7 +300,7 @@ export default function Welcome({
                         <div className="overflow-hidden">
                             <h1
                                 ref={heroSubtext1Ref}
-                                className="text-center text-5xl leading-tight font-black text-primary uppercase md:text-7xl lg:text-9xl"
+                                className="text-center text-5xl leading-tight font-black text-[#593A2F] uppercase md:text-7xl lg:text-9xl"
                             >
                                 Coffee Roasted
                             </h1>
@@ -308,7 +308,7 @@ export default function Welcome({
                         <div className="overflow-hidden">
                             <h1
                                 ref={heroSubtext2Ref}
-                                className="text-center text-5xl leading-tight font-black text-primary uppercase md:text-7xl lg:text-9xl"
+                                className="text-center text-5xl leading-tight font-black text-[#593A2F] uppercase md:text-7xl lg:text-9xl"
                             >
                                 With Perfection
                             </h1>
@@ -328,13 +328,13 @@ export default function Welcome({
                                     <>
                                         <Link
                                             href={register()}
-                                            className="rounded-full border-2 border-primary bg-primary px-10 py-4 text-lg font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-primary"
+                                            className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-10 py-4 text-lg font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
                                         >
                                             Join Us Today
                                         </Link>
                                         <Link
                                             href={login()}
-                                            className="rounded-full border-2 border-primary px-10 py-4 text-lg font-medium text-primary transition-colors hover:bg-primary hover:text-[#F5F1E8]"
+                                            className="rounded-full border-2 border-[#593A2F] px-10 py-4 text-lg font-medium text-[#593A2F] transition-colors hover:bg-[#593A2F] hover:text-[#F5F1E8]"
                                         >
                                             Sign In
                                         </Link>
@@ -346,7 +346,7 @@ export default function Welcome({
                 </section>
 
                 {/* Features Section */}
-                <section className="border-t-2 border-primary bg-[#F5F1E8] px-6 py-20">
+                <section className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-20">
                     <div className="container mx-auto max-w-6xl">
                         <h3
                             className="mb-12 text-center text-4xl font-bold text-[#6B5444]"
@@ -357,7 +357,7 @@ export default function Welcome({
                         <div className="grid gap-8 md:grid-cols-3">
                             {/* Feature 1 */}
                             <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-[#F5F1E8]">
+                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
                                     <img
                                         src="https://placehold.co/50x50/F5F1E8/8B7355?text=☕"
                                         alt="Coffee"
@@ -381,7 +381,7 @@ export default function Welcome({
 
                             {/* Feature 2 */}
                             <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-[#F5F1E8]">
+                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
                                     <img
                                         src="https://placehold.co/50x50/F5F1E8/8B7355?text=🥐"
                                         alt="Pastries"
@@ -404,7 +404,7 @@ export default function Welcome({
 
                             {/* Feature 3 */}
                             <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-[#F5F1E8]">
+                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
                                     <img
                                         src="https://placehold.co/50x50/F5F1E8/8B7355?text=🏡"
                                         alt="Ambiance"
@@ -429,10 +429,10 @@ export default function Welcome({
                 </section>
 
                 {/* Call to Action Section */}
-                <section className="border-t-2 border-primary bg-[#F5F1E8] px-6 py-20">
+                <section className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-20">
                     <div className="container mx-auto max-w-4xl space-y-6 text-center">
                         <h3
-                            className="text-4xl font-bold text-primary md:text-5xl"
+                            className="text-4xl font-bold text-[#593A2F] md:text-5xl"
                             style={{ fontFamily: "'Dancing Script', cursive" }}
                         >
                             Ready to Experience the Magic?
@@ -445,7 +445,7 @@ export default function Welcome({
                             <div className="pt-4">
                                 <Link
                                     href={register()}
-                                    className="inline-block rounded-full border-2 border-primary bg-primary px-10 py-4 text-lg font-bold text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-primary"
+                                    className="inline-block rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-10 py-4 text-lg font-bold text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
                                 >
                                     Get Started Now
                                 </Link>
@@ -455,7 +455,7 @@ export default function Welcome({
                 </section>
 
                 {/* Footer */}
-                <footer className="border-t-2 border-primary bg-[#F5F1E8] px-6 py-8 text-center text-primary">
+                <footer className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-8 text-center text-[#593A2F]">
                     <p className="text-sm">
                         &copy; {new Date().getFullYear()} Cafe Rencontre. All
                         rights reserved.
