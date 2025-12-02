@@ -92,7 +92,7 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
+                                className="mt-2 w-full bg-[#593A2F] hover:bg-[#4a2f26]"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
