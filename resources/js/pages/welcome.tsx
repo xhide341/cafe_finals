@@ -2,10 +2,11 @@ import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { useGSAP } from '@gsap/react';
 import { Head, Link, usePage } from '@inertiajs/react';
+import { MeshGradient } from '@paper-design/shaders-react';
 import { gsap } from 'gsap';
 import { SlowMo } from 'gsap/EasePack';
 import { Award } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 gsap.registerPlugin(useGSAP, SlowMo);
 
@@ -15,6 +16,7 @@ export default function Welcome({
     canRegister?: boolean;
 }) {
     const { auth } = usePage<SharedData>().props;
+    const [speed, setSpeed] = useState(1);
 
     // Refs for GSAP animation targets
     const bigTextRef = useRef<HTMLHeadingElement>(null);
@@ -270,6 +272,41 @@ export default function Welcome({
 
                 {/* Auto-Scrolling Parallax Hero Section */}
                 <section className="relative min-h-screen">
+                    {/* Background Shader */}
+                    <div className="absolute inset-0 z-0 h-full w-full">
+                        <MeshGradient
+                            className="h-full w-full"
+                            colors={[
+                                '#F5F1E8',
+                                '#E8DCC8',
+                                '#D4C4A8',
+                                '#8B7355',
+                            ]}
+                            speed={speed}
+                        />
+                        {/* Lighting overlay effects */}
+                        <div className="pointer-events-none absolute inset-0">
+                            <div
+                                className="absolute top-1/4 left-1/3 h-32 w-32 animate-pulse rounded-full bg-[#593A2F]/5 blur-3xl"
+                                style={{ animationDuration: `${3 / speed}s` }}
+                            />
+                            <div
+                                className="absolute right-1/4 bottom-1/3 h-24 w-24 animate-pulse rounded-full bg-[#8B7355]/10 blur-2xl"
+                                style={{
+                                    animationDuration: `${2 / speed}s`,
+                                    animationDelay: '1s',
+                                }}
+                            />
+                            <div
+                                className="absolute top-1/2 right-1/3 h-20 w-20 animate-pulse rounded-full bg-[#593A2F]/8 blur-xl"
+                                style={{
+                                    animationDuration: `${4 / speed}s`,
+                                    animationDelay: '0.5s',
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Big "Rencontre" Text - Animated by GSAP, moves with its own background */}
                     <div className="pointer-events-none fixed top-0 right-0 left-0 z-40 flex h-screen items-center justify-center">
                         <h1
@@ -285,7 +322,7 @@ export default function Welcome({
                     </div>
 
                     {/* Main Hero Content - New layout with logo/title and big subtext */}
-                    <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-20">
+                    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20">
                         {/* Logo and Title at Top */}
 
                         {/* Hero Badge */}
