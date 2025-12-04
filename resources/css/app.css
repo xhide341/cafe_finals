@@ -97,6 +97,15 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-coffee-primary: var(--coffee-primary);
+    --color-coffee-light: var(--coffee-light);
+    --color-coffee-lighter: var(--coffee-lighter);
+    --color-coffee-dark: var(--coffee-dark);
+    --color-coffee-darker: var(--coffee-darker);
+    --color-coffee-foreground: var(--coffee-foreground);
+    --color-coffee-accent: var(--coffee-accent);
+    --color-coffee-accent-foreground: var(--coffee-accent-foreground);
 }
 
 :root {
@@ -135,6 +144,15 @@
     --sidebar-ring: oklch(0.87 0 0);
     --font-geist-sans: 'Geist Sans', sans-serif;
     --font-geist-mono: 'Geist Mono', monospace;
+
+    --coffee-primary: #593a2f;
+    --coffee-light: #7a584a;
+    --coffee-lighter: #a17d6d;
+    --coffee-dark: #3e2720;
+    --coffee-darker: #261712;
+    --coffee-foreground: #f5ede9;
+    --coffee-accent: #8c5c46;
+    --coffee-accent-foreground: #fdf8f5;
 }
 
 .dark {
@@ -170,6 +188,15 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
+
+    --coffee-primary: #7a584a;
+    --coffee-light: #a17d6d;
+    --coffee-lighter: #c9a896;
+    --coffee-dark: #593a2f;
+    --coffee-darker: #3e2720;
+    --coffee-foreground: #fdf8f5;
+    --coffee-accent: #a17d6d;
+    --coffee-accent-foreground: #261712;
 }
 
 @layer base {
@@ -181,46 +208,6 @@
         @apply bg-background text-foreground;
     }
 }
-/* 
-@theme inline {
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --font-geist-mono: var(----font-geist-mono);
-    --font-geist-sans: var(----font-geist-sans);
-    --color-sidebar-ring: var(----sidebar-ring);
-    --color-sidebar-border: var(----sidebar-border);
-    --color-sidebar-accent-foreground: var(----sidebar-accent-foreground);
-    --color-sidebar-accent: var(----sidebar-accent);
-    --color-sidebar-primary-foreground: var(----sidebar-primary-foreground);
-    --color-sidebar-primary: var(----sidebar-primary);
-    --color-sidebar-foreground: var(----sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --radius: var(----radius);
-    --color-chart-5: var(----chart-5);
-    --color-chart-4: var(----chart-4);
-    --color-chart-3: var(----chart-3);
-    --color-chart-2: var(----chart-2);
-    --color-chart-1: var(----chart-1);
-    --color-ring: var(----ring);
-    --color-input: var(----input);
-    --color-border: var(----border);
-    --color-destructive: var(----destructive);
-    --color-accent-foreground: var(----accent-foreground);
-    --color-accent: var(----accent);
-    --color-muted-foreground: var(----muted-foreground);
-    --color-muted: var(----muted);
-    --color-secondary-foreground: var(----secondary-foreground);
-    --color-secondary: var(----secondary);
-    --color-primary-foreground: var(----primary-foreground);
-    --color-primary: var(----primary);
-    --color-popover-foreground: var(----popover-foreground);
-    --color-popover: var(----popover);
-    --color-card-foreground: var(----card-foreground);
-    --color-card: var(----card);
-    --color-foreground: var(----foreground);
-    --color-background: var(----background);
-} */
 
 @layer base {
     * {

@@ -93,9 +93,11 @@ export function ShaderPlane({
 export function EnergyRing({
     radius = 1,
     position = [0, 0, 0],
+    isDark = false,
 }: {
     radius?: number;
     position?: [number, number, number];
+    isDark?: boolean;
 }) {
     const mesh = useRef<THREE.Mesh<
         THREE.BufferGeometry,

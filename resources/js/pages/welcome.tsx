@@ -1,12 +1,14 @@
-import { dashboard, login, register } from '@/routes';
+import { GuestSidebar } from '@/components/guest-sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { login } from '@/routes';
 import { type SharedData } from '@/types';
 import { useGSAP } from '@gsap/react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { MeshGradient } from '@paper-design/shaders-react';
 import { gsap } from 'gsap';
 import { SlowMo } from 'gsap/EasePack';
-import { Award } from 'lucide-react';
 import { useRef, useState } from 'react';
+import bigImg from '../../assets/images/coffee-bg.png';
 
 gsap.registerPlugin(useGSAP, SlowMo);
 
@@ -57,21 +59,21 @@ export default function Welcome({
                 bigImgRef.current,
                 {
                     yPercent: 30, // Parallax: slightly slower than text
-                    duration: 2.7, // Slightly slower for parallax
+                    duration: 3, // Slightly slower for parallax
                     ease: 'power3.inOut',
                     opacity: 1, // Fade in as it moves
                 },
                 '<',
             )
-            .to(
-                bigImgRef.current,
-                {
-                    yPercent: 30, // Slightly below center during pause
-                    duration: 0.5,
-                    ease: 'none',
-                },
-                '<',
-            )
+            // .to(
+            //     bigImgRef.current,
+            //     {
+            //         yPercent: 30, // Slightly below center during pause
+            //         duration: 0.5,
+            //         ease: 'none',
+            //     },
+            //     '<',
+            // )
             // Group B: slide everything up and off screen
             .to(bigTextRef.current, {
                 yPercent: -400, // Disappear off the top
@@ -116,7 +118,7 @@ export default function Welcome({
                     y: 0,
                     opacity: 1,
                     duration: 1.4,
-                    ease: 'power4.out',
+                    ease: 'power2.out',
                 },
                 '-=1.0', // overlap with header
             )
@@ -126,7 +128,7 @@ export default function Welcome({
                     y: 0,
                     opacity: 1,
                     duration: 1.37,
-                    ease: 'power4.out',
+                    ease: 'power2.out',
                 },
                 '-=1.3', // overlap with heroSubtext1 for simultaneous effect
             )
@@ -149,356 +151,257 @@ export default function Welcome({
                     ease: 'power2.out',
                 },
                 '-=1.2', // start after title
-            );
+            )
+            .set(bigTextRef.current, { opacity: 0 })
+            .set(bigImgRef.current, { opacity: 0 })
+            .set(bigBgRef.current, { opacity: 0 });
     }, []);
 
     return (
         <>
             <Head title="Welcome to Cafe Rencontre" />
-            <div
-                ref={bgRef}
-                className="relative min-h-screen overflow-x-hidden"
-            >
-                {/* Big Image Behind BigText (parallax, eaten by bigBg) */}
-                <div
-                    ref={bigImgRef}
-                    className="pointer-events-none fixed top-0 left-1/2 z-35 flex items-center justify-center overflow-clip"
-                    style={{
-                        transform: 'translateX(-50%)',
-                        width: '80vw',
-                        height: '100vh',
-                        top: '10vh',
-                        opacity: 1,
-                        overflow: 'hidden',
-                    }}
-                >
-                    <img
-                        src="https://placehold.co/1200x400/027373/F5F1E8?text=Cafe+Big+Image"
-                        alt="Cafe Parallax"
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: '1rem 1rem 1rem 1rem',
-                            boxShadow: '0 8px 32px rgba(45,34,23,0.15)',
-                            position: 'relative',
-                            zIndex: 1,
-                        }}
-                    />
+            {/* Hide scrollbar for all browsers */}
+            <style>{`
+                    /* Hide scrollbar for Chrome, Safari and Opera */
+                    ::-webkit-scrollbar {
+                        display: none;
+                    }
+                    /* Hide scrollbar for IE, Edge and Firefox */
+                    body {
+                        -ms-overflow-style: none;  /* IE and Edge */
+                        scrollbar-width: none;     /* Firefox */
+                    }
+                `}</style>
+            <SidebarProvider>
+                <div className="lg:hidden">
+                    <GuestSidebar />
                 </div>
-
-                {/* Big Text Background (dark, moves with text) */}
                 <div
-                    ref={bigBgRef}
-                    className="pointer-events-none fixed top-0 right-0 left-0 z-30 h-[200vh]"
-                    style={{ background: '#000' }}
-                />
-
-                {/* Header/Navigation - Hidden during intro, fades in after animation */}
-                <header
-                    ref={headerRef}
-                    className="fixed top-0 right-0 left-0 z-50 w-full border-b-2 border-[#593A2F] bg-[#F5F1E8]"
+                    ref={bgRef}
+                    className="relative min-h-screen w-full overflow-x-hidden overflow-y-hidden"
                 >
-                    <div className="mx-auto w-full px-20 py-5">
-                        <div className="flex items-center justify-between">
-                            {/* Logo on the left */}
-                            <div className="flex items-center">
+                    {/* Big Image Behind BigText (parallax, eaten by bigBg) */}
+                    <div
+                        ref={bigImgRef}
+                        className="pointer-events-none fixed top-0 left-1/2 z-35 flex items-center justify-center overflow-clip"
+                        style={{
+                            transform: 'translateX(-50%)',
+                            width: '80vw',
+                            height: '100vh',
+                            top: '10vh',
+                            opacity: 1,
+                            overflow: 'hidden',
+                            position: 'fixed',
+                        }}
+                    >
+                        {/* Image */}
+                        <img
+                            src={bigImg}
+                            alt="Cafe Parallax"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                borderRadius: '1rem',
+                                boxShadow: '0 8px 32px rgba(45,34,23,0.15)',
+                                position: 'relative',
+                                zIndex: 1,
+                            }}
+                        />
+
+                        {/* Coffee-colored Overlay */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                borderRadius: '1rem',
+                                background: 'rgba(70, 45, 25, 0.35)', // warm coffee tint
+                                mixBlendMode: 'multiply', // blends naturally with photo
+                                zIndex: 2,
+                            }}
+                        ></div>
+                    </div>
+
+                    {/* Big Text Background (dark, moves with text) */}
+                    <div
+                        ref={bigBgRef}
+                        className="pointer-events-none fixed top-0 right-0 left-0 z-30 h-[200vh]"
+                        style={{ background: '#F5F1E8' }}
+                    />
+
+                    {/* Header/Navigation - Hidden during intro, fades in after animation */}
+                    <header
+                        ref={headerRef}
+                        className="fixed top-0 right-0 left-0 z-50 w-full border-b-1 border-[#593A2F] bg-[#F5F1E8]"
+                    >
+                        <div className="mx-auto w-full px-4 py-5 sm:px-8 md:px-20">
+                            <div className="flex items-center justify-between">
+                                {/* Desktop Centered Navigation */}
+                                <nav className="hidden items-center gap-4 lg:flex lg:flex-1 lg:justify-start lg:gap-8">
+                                    <Link
+                                        href="#about"
+                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                                    >
+                                        About
+                                    </Link>
+                                    <Link
+                                        href="#stores"
+                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                                    >
+                                        Stores
+                                    </Link>
+                                    <Link
+                                        href="#collaborations"
+                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                                    >
+                                        Collaborations
+                                    </Link>
+                                    <Link
+                                        href="#contact"
+                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                                    >
+                                        Contact
+                                    </Link>
+                                </nav>
+
+                                {/* Right side: Auth links - Desktop only */}
+                                <div className="ml-auto hidden items-center gap-4 lg:flex">
+                                    <span className="text-sm font-medium text-coffee-primary sm:text-base">
+                                        Store admin?{' '}
+                                        <Link
+                                            href={login()}
+                                            className="text-coffee-primary underline hover:text-[#6B5444]"
+                                        >
+                                            Login
+                                        </Link>
+                                    </span>
+                                </div>
+
+                                {/* Mobile Sidebar Trigger - Right side */}
+                                <div className="ml-auto lg:hidden">
+                                    <SidebarTrigger className="h-10 w-10 text-coffee-primary hover:bg-[#E8DCC8]" />
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Auto-Scrolling Parallax Hero Section */}
+                    <section className="relative min-h-screen">
+                        {/* Background Shader */}
+                        <div className="absolute inset-0 z-0 h-full w-full">
+                            <MeshGradient
+                                className="h-full w-full"
+                                colors={[
+                                    '#F5F1E8',
+                                    '#E8DCC8',
+                                    '#D4C4A8',
+                                    '#8B7355',
+                                ]}
+                                speed={speed}
+                            />
+                            {/* Lighting overlay effects */}
+                            <div className="pointer-events-none absolute inset-0">
+                                <div
+                                    className="absolute top-1/4 left-1/3 h-32 w-32 animate-pulse rounded-full bg-[#593A2F]/5 blur-3xl"
+                                    style={{
+                                        animationDuration: `${3 / speed}s`,
+                                    }}
+                                />
+                                <div
+                                    className="absolute right-1/4 bottom-1/3 h-24 w-24 animate-pulse rounded-full bg-[#8B7355]/10 blur-2xl"
+                                    style={{
+                                        animationDuration: `${2 / speed}s`,
+                                        animationDelay: '1s',
+                                    }}
+                                />
+                                <div
+                                    className="absolute top-1/2 right-1/3 h-20 w-20 animate-pulse rounded-full bg-[#593A2F]/8 blur-xl"
+                                    style={{
+                                        animationDuration: `${4 / speed}s`,
+                                        animationDelay: '0.5s',
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Big "Rencontre" Text - Animated by GSAP, moves with its own background */}
+                        <div className="pointer-events-none fixed top-0 right-0 left-0 z-40 flex h-screen items-center justify-center">
+                            <h1
+                                ref={bigTextRef}
+                                className="text-[7rem] font-bold text-[#8B7355] select-none md:text-[10rem] lg:text-[14rem]"
+                                style={{
+                                    fontFamily: "'Dancing Script', cursive",
+                                    lineHeight: '1',
+                                }}
+                            >
+                                Rencontre
+                            </h1>
+                        </div>
+
+                        {/* Main Hero Content - New layout with logo/title and big subtext */}
+                        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20">
+                            {/* Centered Logo Placeholder */}
+                            <div className="mb-8 flex items-center justify-center">
                                 <img
-                                    src="https://placehold.co/60x60/8B7355/F5F1E8?text=Logo"
-                                    alt="Cafe Logo"
-                                    className="h-12 w-12 rounded-full border-2 border-[#593A2F] shadow-md"
+                                    src="https://placehold.co/120x120/8B7355/F5F1E8?text=Logo"
+                                    alt="Cafe Logo Centered"
+                                    className="h-20 w-20 rounded-full border-4 border-[#593A2F] shadow-lg sm:h-28 sm:w-28"
                                     style={{ objectFit: 'cover' }}
                                 />
                             </div>
 
-                            {/* Centered Navigation */}
-                            <nav className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-6">
-                                <Link
-                                    href="#about"
-                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
+                            {/* Big Bold Subtext - Main Focus with overflow hidden for reveal effect */}
+                            <div className="w-full overflow-hidden">
+                                <h1
+                                    ref={heroSubtext1Ref}
+                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl"
                                 >
-                                    About
-                                </Link>
-                                <Link
-                                    href="#stores"
-                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
+                                    Coffee Roasted
+                                </h1>
+                            </div>
+                            <div className="w-full overflow-hidden">
+                                <h1
+                                    ref={heroSubtext2Ref}
+                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl"
                                 >
-                                    Stores
-                                </Link>
-                                <Link
-                                    href="#collaborations"
-                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
-                                >
-                                    Collaborations
-                                </Link>
-                                <Link
-                                    href="#contact"
-                                    className="text-lg font-medium text-[#593A2F] hover:text-[#6B5444]"
-                                >
-                                    Contact
-                                </Link>
-                            </nav>
+                                    With Perfection
+                                </h1>
+                            </div>
 
-                            <nav className="ml-auto flex items-center gap-4">
-                                {auth.user ? (
-                                    <Link
-                                        href={dashboard()}
-                                        className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={login()}
-                                            className="px-6 py-2 font-medium text-[#593A2F] transition-colors hover:text-[#6B5444]"
-                                        >
-                                            Log in
-                                        </Link>
-                                        {canRegister && (
+                            {/* Additional Content */}
+                            <div
+                                ref={contentRef}
+                                className="mt-10 w-full max-w-xl space-y-6 text-center sm:mt-16 sm:max-w-3xl"
+                            >
+                                <p className="text-lg leading-relaxed font-semibold text-[#6B5444] sm:text-2xl md:text-3xl">
+                                    Precision in every pour. Passion in every
+                                    sip. No shortcuts. Just coffee done right.
+                                </p>
+                                <div className="flex flex-col items-center gap-4 pt-4 sm:flex-row sm:flex-wrap sm:justify-center">
+                                    {!auth.user && (
+                                        <>
                                             <Link
-                                                href={register()}
-                                                className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-6 py-2 font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
+                                                href="/shop"
+                                                className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-8 py-3 text-base font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-coffee-primary sm:px-10 sm:py-4 sm:text-lg"
                                             >
-                                                Register
+                                                View Store
                                             </Link>
-                                        )}
-                                    </>
-                                )}
-                            </nav>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Auto-Scrolling Parallax Hero Section */}
-                <section className="relative min-h-screen">
-                    {/* Background Shader */}
-                    <div className="absolute inset-0 z-0 h-full w-full">
-                        <MeshGradient
-                            className="h-full w-full"
-                            colors={[
-                                '#F5F1E8',
-                                '#E8DCC8',
-                                '#D4C4A8',
-                                '#8B7355',
-                            ]}
-                            speed={speed}
-                        />
-                        {/* Lighting overlay effects */}
-                        <div className="pointer-events-none absolute inset-0">
-                            <div
-                                className="absolute top-1/4 left-1/3 h-32 w-32 animate-pulse rounded-full bg-[#593A2F]/5 blur-3xl"
-                                style={{ animationDuration: `${3 / speed}s` }}
-                            />
-                            <div
-                                className="absolute right-1/4 bottom-1/3 h-24 w-24 animate-pulse rounded-full bg-[#8B7355]/10 blur-2xl"
-                                style={{
-                                    animationDuration: `${2 / speed}s`,
-                                    animationDelay: '1s',
-                                }}
-                            />
-                            <div
-                                className="absolute top-1/2 right-1/3 h-20 w-20 animate-pulse rounded-full bg-[#593A2F]/8 blur-xl"
-                                style={{
-                                    animationDuration: `${4 / speed}s`,
-                                    animationDelay: '0.5s',
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Big "Rencontre" Text - Animated by GSAP, moves with its own background */}
-                    <div className="pointer-events-none fixed top-0 right-0 left-0 z-40 flex h-screen items-center justify-center">
-                        <h1
-                            ref={bigTextRef}
-                            className="text-[7rem] font-bold text-[#8B7355] select-none md:text-[10rem] lg:text-[14rem]"
-                            style={{
-                                fontFamily: "'Dancing Script', cursive",
-                                lineHeight: '1',
-                            }}
-                        >
-                            Rencontre
-                        </h1>
-                    </div>
-
-                    {/* Main Hero Content - New layout with logo/title and big subtext */}
-                    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20">
-                        {/* Logo and Title at Top */}
-
-                        {/* Hero Badge */}
-                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-[#593A2F]/50 bg-[#593A2F]/10 px-4 py-2">
-                            <Award className="h-5 w-5 text-[#593A2F]" />
-                            <span className="text-sm font-semibold tracking-wide text-[#593A2F] uppercase">
-                                Award-Winning Specialty Coffee
-                            </span>
-                        </div>
-
-                        {/* Big Bold Subtext - Main Focus with overflow hidden for reveal effect */}
-                        <div className="overflow-hidden">
-                            <h1
-                                ref={heroSubtext1Ref}
-                                className="text-center text-5xl leading-tight font-black text-[#593A2F] uppercase md:text-7xl lg:text-9xl"
-                            >
-                                Coffee Roasted
-                            </h1>
-                        </div>
-                        <div className="overflow-hidden">
-                            <h1
-                                ref={heroSubtext2Ref}
-                                className="text-center text-5xl leading-tight font-black text-[#593A2F] uppercase md:text-7xl lg:text-9xl"
-                            >
-                                With Perfection
-                            </h1>
-                        </div>
-
-                        {/* Additional Content */}
-                        <div
-                            ref={contentRef}
-                            className="mt-16 max-w-3xl space-y-6 text-center"
-                        >
-                            <p className="text-3xl leading-relaxed font-semibold text-[#6B5444]">
-                                Precision in every pour. Passion in every sip.
-                                No shortcuts. Just coffee done right.
-                            </p>
-                            <div className="flex flex-wrap justify-center gap-4 pt-4">
-                                {!auth.user && (
-                                    <>
-                                        <Link
-                                            href={register()}
-                                            className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-10 py-4 text-lg font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
-                                        >
-                                            Join Us Today
-                                        </Link>
-                                        <Link
-                                            href={login()}
-                                            className="rounded-full border-2 border-[#593A2F] px-10 py-4 text-lg font-medium text-[#593A2F] transition-colors hover:bg-[#593A2F] hover:text-[#F5F1E8]"
-                                        >
-                                            Sign In
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Features Section */}
-                <section className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-20">
-                    <div className="container mx-auto max-w-6xl">
-                        <h3
-                            className="mb-12 text-center text-4xl font-bold text-[#6B5444]"
-                            style={{ fontFamily: "'Dancing Script', cursive" }}
-                        >
-                            Why Choose Cafe Rencontre?
-                        </h3>
-                        <div className="grid gap-8 md:grid-cols-3">
-                            {/* Feature 1 */}
-                            <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
-                                    <img
-                                        src="https://placehold.co/50x50/F5F1E8/8B7355?text=☕"
-                                        alt="Coffee"
-                                        className="h-12 w-12"
-                                    />
+                                        </>
+                                    )}
                                 </div>
-                                <h4
-                                    className="text-2xl font-bold text-[#6B5444]"
-                                    style={{
-                                        fontFamily: "'Dancing Script', cursive",
-                                    }}
-                                >
-                                    Premium Coffee
-                                </h4>
-                                <p className="text-[#8B7355]">
-                                    Sourced from the finest beans around the
-                                    world, our coffee is expertly brewed to
-                                    perfection.
-                                </p>
-                            </div>
-
-                            {/* Feature 2 */}
-                            <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
-                                    <img
-                                        src="https://placehold.co/50x50/F5F1E8/8B7355?text=🥐"
-                                        alt="Pastries"
-                                        className="h-12 w-12"
-                                    />
-                                </div>
-                                <h4
-                                    className="text-2xl font-bold text-[#6B5444]"
-                                    style={{
-                                        fontFamily: "'Dancing Script', cursive",
-                                    }}
-                                >
-                                    Fresh Pastries
-                                </h4>
-                                <p className="text-[#8B7355]">
-                                    Handcrafted pastries and treats baked fresh
-                                    every morning by our artisan bakers.
-                                </p>
-                            </div>
-
-                            {/* Feature 3 */}
-                            <div className="space-y-4 p-6 text-center">
-                                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-[#593A2F] bg-[#F5F1E8]">
-                                    <img
-                                        src="https://placehold.co/50x50/F5F1E8/8B7355?text=🏡"
-                                        alt="Ambiance"
-                                        className="h-12 w-12"
-                                    />
-                                </div>
-                                <h4
-                                    className="text-2xl font-bold text-[#6B5444]"
-                                    style={{
-                                        fontFamily: "'Dancing Script', cursive",
-                                    }}
-                                >
-                                    Cozy Ambiance
-                                </h4>
-                                <p className="text-[#8B7355]">
-                                    A warm, inviting space perfect for work,
-                                    meetings, or catching up with friends.
-                                </p>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                {/* Call to Action Section */}
-                <section className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-20">
-                    <div className="container mx-auto max-w-4xl space-y-6 text-center">
-                        <h3
-                            className="text-4xl font-bold text-[#593A2F] md:text-5xl"
-                            style={{ fontFamily: "'Dancing Script', cursive" }}
-                        >
-                            Ready to Experience the Magic?
-                        </h3>
-                        <p className="text-lg text-[#6B5444]">
-                            Join our community of coffee lovers and be part of
-                            something special.
+                    {/* Footer */}
+                    <footer className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-8 text-center text-coffee-primary">
+                        <p className="text-sm">
+                            &copy; {new Date().getFullYear()} Cafe Rencontre.
+                            All rights reserved.
                         </p>
-                        {!auth.user && (
-                            <div className="pt-4">
-                                <Link
-                                    href={register()}
-                                    className="inline-block rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-10 py-4 text-lg font-bold text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-[#593A2F]"
-                                >
-                                    Get Started Now
-                                </Link>
-                            </div>
-                        )}
-                    </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-8 text-center text-[#593A2F]">
-                    <p className="text-sm">
-                        &copy; {new Date().getFullYear()} Cafe Rencontre. All
-                        rights reserved.
-                    </p>
-                </footer>
-            </div>
+                    </footer>
+                </div>
+            </SidebarProvider>
         </>
     );
 }
