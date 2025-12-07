@@ -14,96 +14,98 @@ import { ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-function HomepageContent() {
+function ShopContent() {
     const { auth } = usePage<SharedData>().props;
     const [language, setLanguage] = useState<'EN' | 'PH'>('EN');
     const { addItem, getTotalItems } = useCart();
 
-    // Sample coffee products
+    // Coffee products from menu
     const products: Product[] = [
+        // Hot Coffee
         {
             id: 1,
-            name: 'Espresso Blend',
-            description: 'chocolate, bold',
-            price: 250,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Espresso',
+            name: 'Spanish Latte',
+            description: 'hot, creamy',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Spanish+Latte',
         },
         {
             id: 2,
-            name: 'Cappuccino',
-            description: 'creamy, foam',
-            price: 180,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Cappuccino',
+            name: 'Macchiato',
+            description: 'hot, espresso',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Macchiato',
         },
         {
             id: 3,
-            name: 'Latte Macchiato',
-            description: 'vanilla, smooth',
-            price: 200,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Latte',
+            name: 'Hazelnut Latte',
+            description: 'hot, nutty',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Hazelnut',
         },
         {
             id: 4,
             name: 'Americano',
-            description: 'classic, strong',
-            price: 150,
+            description: 'hot, bold',
+            price: 49,
             image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Americano',
         },
         {
             id: 5,
-            name: 'Mocha',
-            description: 'chocolate, espresso',
-            price: 220,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Mocha',
-        },
-        {
-            id: 6,
-            name: 'Flat White',
-            description: 'microfoam, double',
-            price: 190,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Flat+White',
-        },
-        {
-            id: 7,
-            name: 'Cold Brew',
-            description: 'refreshing, smooth',
-            price: 170,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Cold+Brew',
-        },
-        {
-            id: 8,
             name: 'Caramel Macchiato',
-            description: 'caramel, sweet',
-            price: 230,
+            description: 'hot, sweet',
+            price: 49,
             image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Caramel',
         },
         {
+            id: 6,
+            name: 'Vanilla Latte',
+            description: 'hot, smooth',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Vanilla',
+        },
+        // Iced Coffee
+        {
+            id: 7,
+            name: 'Iced Spanish Latte',
+            description: 'iced, creamy',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Spanish',
+        },
+        {
+            id: 8,
+            name: 'Iced Macchiato',
+            description: 'iced, espresso',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Macchiato',
+        },
+        {
             id: 9,
-            name: 'Affogato',
-            description: 'vanilla, ice cream',
-            price: 210,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Affogato',
+            name: 'Iced Hazelnut Latte',
+            description: 'iced, nutty',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Hazelnut',
         },
         {
             id: 10,
-            name: 'Cortado',
-            description: 'balanced, milk',
-            price: 160,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Cortado',
+            name: 'Iced Americano',
+            description: 'iced, bold',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Americano',
         },
         {
             id: 11,
-            name: 'Iced Latte',
-            description: 'cold, milk',
-            price: 195,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Latte',
+            name: 'Iced Caramel Macchiato',
+            description: 'iced, sweet',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Caramel',
         },
         {
             id: 12,
-            name: 'Turkish Coffee',
-            description: 'traditional, strong',
-            price: 140,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Turkish',
+            name: 'Iced Vanilla Latte',
+            description: 'iced, smooth',
+            price: 49,
+            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Vanilla',
         },
     ];
 
@@ -117,7 +119,7 @@ function HomepageContent() {
         if (language === 'EN') {
             return (price / 56).toFixed(2);
         }
-        return price;
+        return price.toFixed(2);
     };
 
     const getCurrencySymbol = () => {
@@ -138,7 +140,7 @@ function HomepageContent() {
                                 alt="Cafe Logo"
                                 className="h-10 w-10 rounded-full border-2 border-primary"
                             />
-                            <span className="font-cursive text-xl font-bold text-primary">
+                            <span className="font-cursive text-xl font-bold text-coffee-primary">
                                 Cafe Rencontre
                             </span>
                         </Link>
@@ -216,10 +218,10 @@ function HomepageContent() {
                 <section className="border-b bg-gradient-to-b from-muted/50 to-background py-12">
                     <div className="px-6">
                         <div className="space-y-4 text-center">
-                            <h1 className="font-cursive text-4xl font-bold text-primary md:text-6xl">
+                            <h1 className="font-cursive text-4xl font-bold text-coffee-primary md:text-6xl">
                                 Our Coffee Collection
                             </h1>
-                            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                            <p className="mx-auto max-w-2xl font-poppins text-lg text-muted-foreground">
                                 Discover our handcrafted coffee beverages, made
                                 with love and the finest beans from around the
                                 world
@@ -255,7 +257,7 @@ function HomepageContent() {
                                                 <h3 className="truncate text-2xl leading-tight font-extrabold text-card-foreground select-none">
                                                     {product.name}
                                                 </h3>
-                                                <p className="ml-0.2 mt-1 line-clamp-2 text-lg leading-tight font-medium text-muted-foreground lowercase select-none">
+                                                <p className="ml-0.2 mt-1 line-clamp-2 font-poppins text-lg leading-tight font-medium text-muted-foreground lowercase select-none">
                                                     {product.description}
                                                 </p>
                                             </div>
@@ -280,7 +282,7 @@ function HomepageContent() {
                 </section>
 
                 {/* Footer */}
-                <footer className="mt-12 border-t bg-muted/50 py-8">
+                <footer className="border-t bg-muted/50 py-6">
                     <div className="px-6 text-center">
                         <p className="text-sm text-muted-foreground">
                             &copy; {new Date().getFullYear()} Cafe Rencontre.
@@ -293,10 +295,10 @@ function HomepageContent() {
     );
 }
 
-export default function Homepage() {
+export default function Shop() {
     return (
         <CartProvider>
-            <HomepageContent />
+            <ShopContent />
         </CartProvider>
     );
 }

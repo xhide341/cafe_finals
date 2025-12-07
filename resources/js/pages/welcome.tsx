@@ -8,7 +8,7 @@ import { MeshGradient } from '@paper-design/shaders-react';
 import { gsap } from 'gsap';
 import { SlowMo } from 'gsap/EasePack';
 import { useRef, useState } from 'react';
-import bigImg from '../../assets/images/coffee-bg.png';
+import cafeLogo from '../../assets/images/cafe-logo.png';
 
 gsap.registerPlugin(useGSAP, SlowMo);
 
@@ -23,7 +23,6 @@ export default function Welcome({
     // Refs for GSAP animation targets
     const bigTextRef = useRef<HTMLHeadingElement>(null);
     const bigBgRef = useRef<HTMLDivElement>(null);
-    const bigImgRef = useRef<HTMLDivElement>(null); // New: big image ref
     const headerRef = useRef<HTMLElement>(null);
     const heroSubtext1Ref = useRef<HTMLHeadingElement>(null);
     const heroSubtext2Ref = useRef<HTMLHeadingElement>(null);
@@ -39,8 +38,7 @@ export default function Welcome({
 
         // Initial states
         gsap.set(bigBgRef.current, { opacity: 1, yPercent: 0 });
-        gsap.set(bigTextRef.current, { yPercent: 400, opacity: 1 });
-        gsap.set(bigImgRef.current, { yPercent: 400, opacity: 0 }); // Start hidden
+        gsap.set(bigTextRef.current, { yPercent: 360, opacity: 0 });
         gsap.set(headerRef.current, { y: -100, opacity: 0 });
         // Start hero subtexts hidden (opacity 0) and translated down
         gsap.set(heroSubtext1Ref.current, { y: 200, opacity: 0 });
@@ -51,44 +49,17 @@ export default function Welcome({
 
         // Animation sequence
         tl.to(bigTextRef.current, {
-            yPercent: -60, // Scroll to center
+            yPercent: 0, // Land perfectly centered
             duration: 3,
-            ease: 'power3.inOut',
+            ease: 'power2.inOut',
+            opacity: 1,
         })
-            .to(
-                bigImgRef.current,
-                {
-                    yPercent: 30, // Parallax: slightly slower than text
-                    duration: 3, // Slightly slower for parallax
-                    ease: 'power3.inOut',
-                    opacity: 1, // Fade in as it moves
-                },
-                '<',
-            )
-            // .to(
-            //     bigImgRef.current,
-            //     {
-            //         yPercent: 30, // Slightly below center during pause
-            //         duration: 0.5,
-            //         ease: 'none',
-            //     },
-            //     '<',
-            // )
             // Group B: slide everything up and off screen
             .to(bigTextRef.current, {
-                yPercent: -400, // Disappear off the top
+                yPercent: -320, // Disappear off the top more aggressively
                 duration: 1.4,
                 ease: 'power2.inOut',
             })
-            .to(
-                bigImgRef.current,
-                {
-                    yPercent: -180, // slide up with the text
-                    duration: 2.0,
-                    ease: 'power2.inOut',
-                },
-                '<', // start at same time as text
-            )
             .to(
                 bigBgRef.current,
                 {
@@ -153,7 +124,6 @@ export default function Welcome({
                 '-=1.2', // start after title
             )
             .set(bigTextRef.current, { opacity: 0 })
-            .set(bigImgRef.current, { opacity: 0 })
             .set(bigBgRef.current, { opacity: 0 });
     }, []);
 
@@ -180,48 +150,6 @@ export default function Welcome({
                     ref={bgRef}
                     className="relative min-h-screen w-full overflow-x-hidden overflow-y-hidden"
                 >
-                    {/* Big Image Behind BigText (parallax, eaten by bigBg) */}
-                    <div
-                        ref={bigImgRef}
-                        className="pointer-events-none fixed top-0 left-1/2 z-35 flex items-center justify-center overflow-clip"
-                        style={{
-                            transform: 'translateX(-50%)',
-                            width: '80vw',
-                            height: '100vh',
-                            top: '10vh',
-                            opacity: 1,
-                            overflow: 'hidden',
-                            position: 'fixed',
-                        }}
-                    >
-                        {/* Image */}
-                        <img
-                            src={bigImg}
-                            alt="Cafe Parallax"
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                borderRadius: '1rem',
-                                boxShadow: '0 8px 32px rgba(45,34,23,0.15)',
-                                position: 'relative',
-                                zIndex: 1,
-                            }}
-                        />
-
-                        {/* Coffee-colored Overlay */}
-                        <div
-                            style={{
-                                position: 'absolute',
-                                inset: 0,
-                                borderRadius: '1rem',
-                                background: 'rgba(70, 45, 25, 0.35)', // warm coffee tint
-                                mixBlendMode: 'multiply', // blends naturally with photo
-                                zIndex: 2,
-                            }}
-                        ></div>
-                    </div>
-
                     {/* Big Text Background (dark, moves with text) */}
                     <div
                         ref={bigBgRef}
@@ -232,7 +160,7 @@ export default function Welcome({
                     {/* Header/Navigation - Hidden during intro, fades in after animation */}
                     <header
                         ref={headerRef}
-                        className="fixed top-0 right-0 left-0 z-50 w-full border-b-1 border-[#593A2F] bg-[#F5F1E8]"
+                        className="fixed top-0 right-0 left-0 z-50 w-full border-b border-[#593A2F] bg-[rgba(245,241,232,0.25)] font-poppins shadow-[0_8px_30px_rgba(89,58,47,0.05)] backdrop-blur-xl"
                     >
                         <div className="mx-auto w-full px-4 py-5 sm:px-8 md:px-20">
                             <div className="flex items-center justify-between">
@@ -270,7 +198,7 @@ export default function Welcome({
                                         Store admin?{' '}
                                         <Link
                                             href={login()}
-                                            className="text-coffee-primary underline hover:text-[#6B5444]"
+                                            className="text-blue-600 underline hover:text-blue-700"
                                         >
                                             Login
                                         </Link>
@@ -285,45 +213,45 @@ export default function Welcome({
                         </div>
                     </header>
 
+                    {/* Background Shader - Full page coverage */}
+                    <div className="fixed inset-0 z-0 h-full w-full">
+                        <MeshGradient
+                            className="h-full w-full"
+                            colors={[
+                                '#F5F1E8',
+                                '#E8DCC8',
+                                '#D4C4A8',
+                                '#8B7355',
+                            ]}
+                            speed={speed}
+                        />
+                        {/* Lighting overlay effects */}
+                        <div className="pointer-events-none absolute inset-0">
+                            <div
+                                className="absolute top-1/4 left-1/3 h-32 w-32 animate-pulse rounded-full bg-[#593A2F]/5 blur-3xl"
+                                style={{
+                                    animationDuration: `${3 / speed}s`,
+                                }}
+                            />
+                            <div
+                                className="absolute right-1/4 bottom-1/3 h-24 w-24 animate-pulse rounded-full bg-[#8B7355]/10 blur-2xl"
+                                style={{
+                                    animationDuration: `${2 / speed}s`,
+                                    animationDelay: '1s',
+                                }}
+                            />
+                            <div
+                                className="absolute top-1/2 right-1/3 h-20 w-20 animate-pulse rounded-full bg-[#593A2F]/8 blur-xl"
+                                style={{
+                                    animationDuration: `${4 / speed}s`,
+                                    animationDelay: '0.5s',
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Auto-Scrolling Parallax Hero Section */}
                     <section className="relative min-h-screen">
-                        {/* Background Shader */}
-                        <div className="absolute inset-0 z-0 h-full w-full">
-                            <MeshGradient
-                                className="h-full w-full"
-                                colors={[
-                                    '#F5F1E8',
-                                    '#E8DCC8',
-                                    '#D4C4A8',
-                                    '#8B7355',
-                                ]}
-                                speed={speed}
-                            />
-                            {/* Lighting overlay effects */}
-                            <div className="pointer-events-none absolute inset-0">
-                                <div
-                                    className="absolute top-1/4 left-1/3 h-32 w-32 animate-pulse rounded-full bg-[#593A2F]/5 blur-3xl"
-                                    style={{
-                                        animationDuration: `${3 / speed}s`,
-                                    }}
-                                />
-                                <div
-                                    className="absolute right-1/4 bottom-1/3 h-24 w-24 animate-pulse rounded-full bg-[#8B7355]/10 blur-2xl"
-                                    style={{
-                                        animationDuration: `${2 / speed}s`,
-                                        animationDelay: '1s',
-                                    }}
-                                />
-                                <div
-                                    className="absolute top-1/2 right-1/3 h-20 w-20 animate-pulse rounded-full bg-[#593A2F]/8 blur-xl"
-                                    style={{
-                                        animationDuration: `${4 / speed}s`,
-                                        animationDelay: '0.5s',
-                                    }}
-                                />
-                            </div>
-                        </div>
-
                         {/* Big "Rencontre" Text - Animated by GSAP, moves with its own background */}
                         <div className="pointer-events-none fixed top-0 right-0 left-0 z-40 flex h-screen items-center justify-center">
                             <h1
@@ -334,19 +262,18 @@ export default function Welcome({
                                     lineHeight: '1',
                                 }}
                             >
-                                Rencontre
+                                Cafe Rencontre
                             </h1>
                         </div>
 
                         {/* Main Hero Content - New layout with logo/title and big subtext */}
-                        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20">
+                        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pt-24 pb-20">
                             {/* Centered Logo Placeholder */}
-                            <div className="mb-8 flex items-center justify-center">
+                            <div className="mb-2 flex items-center justify-center">
                                 <img
-                                    src="https://placehold.co/120x120/8B7355/F5F1E8?text=Logo"
+                                    src={cafeLogo}
                                     alt="Cafe Logo Centered"
-                                    className="h-20 w-20 rounded-full border-4 border-[#593A2F] shadow-lg sm:h-28 sm:w-28"
-                                    style={{ objectFit: 'cover' }}
+                                    className="h-16 w-16 rounded-full object-cover sm:h-40 sm:w-40 md:h-24 md:w-24"
                                 />
                             </div>
 
@@ -354,7 +281,7 @@ export default function Welcome({
                             <div className="w-full overflow-hidden">
                                 <h1
                                     ref={heroSubtext1Ref}
-                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl"
+                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl xl:text-[9.5rem]"
                                 >
                                     Coffee Roasted
                                 </h1>
@@ -362,7 +289,7 @@ export default function Welcome({
                             <div className="w-full overflow-hidden">
                                 <h1
                                     ref={heroSubtext2Ref}
-                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl"
+                                    className="text-center text-3xl leading-tight font-black text-coffee-primary uppercase sm:text-5xl md:text-7xl lg:text-8xl xl:text-[9.5rem]"
                                 >
                                     With Perfection
                                 </h1>
@@ -371,18 +298,22 @@ export default function Welcome({
                             {/* Additional Content */}
                             <div
                                 ref={contentRef}
-                                className="mt-10 w-full max-w-xl space-y-6 text-center sm:mt-16 sm:max-w-3xl"
+                                className="mt-8 w-full max-w-xl space-y-6 text-center sm:mt-10 sm:max-w-3xl"
                             >
                                 <p className="text-lg leading-relaxed font-semibold text-[#6B5444] sm:text-2xl md:text-3xl">
                                     Precision in every pour. Passion in every
-                                    sip. No shortcuts. Just coffee done right.
+                                    sip.{' '}
+                                    <span className="whitespace-nowrap">
+                                        No shortcuts.
+                                    </span>{' '}
+                                    Just coffee done right.
                                 </p>
                                 <div className="flex flex-col items-center gap-4 pt-4 sm:flex-row sm:flex-wrap sm:justify-center">
                                     {!auth.user && (
                                         <>
                                             <Link
                                                 href="/shop"
-                                                className="rounded-full border-2 border-[#593A2F] bg-[#593A2F] px-8 py-3 text-base font-medium text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8] hover:text-coffee-primary sm:px-10 sm:py-4 sm:text-lg"
+                                                className="rounded-full bg-coffee-primary px-8 py-3 text-base font-medium text-[#F5F1E8] transition-colors hover:bg-coffee-dark hover:text-white sm:px-10 sm:py-4 sm:text-lg"
                                             >
                                                 View Store
                                             </Link>
@@ -394,8 +325,8 @@ export default function Welcome({
                     </section>
 
                     {/* Footer */}
-                    <footer className="border-t-2 border-[#593A2F] bg-[#F5F1E8] px-6 py-8 text-center text-coffee-primary">
-                        <p className="text-sm">
+                    <footer className="border-t border-[#593A2F] bg-[rgba(245,241,232,0.25)] px-6 py-6 text-center text-coffee-primary shadow-[0_-8px_30px_rgba(89,58,47,0.05)] backdrop-blur-xl">
+                        <p className="font-poppins text-sm">
                             &copy; {new Date().getFullYear()} Cafe Rencontre.
                             All rights reserved.
                         </p>

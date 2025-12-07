@@ -11,7 +11,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('shop', function () {
-    return Inertia::render('homepage');
+    return Inertia::render('shop');
 })->name('shop');
 
 Route::get('cart', function () {

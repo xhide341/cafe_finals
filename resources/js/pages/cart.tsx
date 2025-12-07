@@ -11,7 +11,14 @@ import {
 import { CartProvider, useCart } from '@/contexts/cart-context';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Minus, Plus, ShoppingCart, Trash2, User } from 'lucide-react';
+import {
+    ArrowLeft,
+    Minus,
+    Plus,
+    ShoppingCart,
+    Trash2,
+    User,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -48,7 +55,7 @@ function CartContent() {
     return (
         <>
             <Head title="Shopping Cart - Cafe Rencontre" />
-            <div className="min-h-screen w-full bg-background">
+            <div className="flex min-h-screen w-full flex-col bg-background">
                 {/* Header */}
                 <header className="max-w-8xl sticky top-0 z-50 mx-auto w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
                     <div className="flex h-16 items-center justify-between px-6">
@@ -108,7 +115,15 @@ function CartContent() {
                 </header>
 
                 {/* Cart Content */}
-                <main className="mx-auto max-w-7xl px-6 py-12">
+                <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
+                    <div className="mb-6">
+                        <Button variant="link" asChild>
+                            <Link href="/shop" className="gap-2">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back to Shop
+                            </Link>
+                        </Button>
+                    </div>
                     <h1 className="mb-8 font-cursive text-4xl font-bold text-primary">
                         Shopping Cart
                     </h1>
@@ -261,7 +276,7 @@ function CartContent() {
                 </main>
 
                 {/* Footer */}
-                <footer className="mt-12 border-t bg-muted/50 py-8">
+                <footer className="border-t bg-muted/50 py-6">
                     <div className="px-6 text-center">
                         <p className="text-sm text-muted-foreground">
                             &copy; {new Date().getFullYear()} Cafe Rencontre.
