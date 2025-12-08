@@ -71,3 +71,12 @@ export interface Receipt {
     tax: number;
     total: number;
 }
+
+export interface Store {
+    id: string;
+    name: string;
+    description: string;
+    city: string;
+    image: string;
+    mapLink: string;
+}

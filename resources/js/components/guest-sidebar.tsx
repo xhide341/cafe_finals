@@ -11,9 +11,14 @@ import {
 import { login } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Coffee, Mail, MapPin, Users } from 'lucide-react';
+import { Coffee, Home, Mail, MapPin, ShoppingBag } from 'lucide-react';
 
 const guestNavItems: NavItem[] = [
+    {
+        title: 'Home',
+        href: '/',
+        icon: Home,
+    },
     {
         title: 'About',
         href: '#about',
@@ -25,9 +30,9 @@ const guestNavItems: NavItem[] = [
         icon: MapPin,
     },
     {
-        title: 'Collaborations',
-        href: '#collaborations',
-        icon: Users,
+        title: 'Shop',
+        href: '/shop',
+        icon: ShoppingBag,
     },
     {
         title: 'Contact',

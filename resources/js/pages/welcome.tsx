@@ -1,6 +1,10 @@
+import CountUp from '@/components/count-up';
+import { Footer } from '@/components/footer';
+import { Gallery4 } from '@/components/gallery4';
 import { GuestSidebar } from '@/components/guest-sidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { login } from '@/routes';
+import { Header } from '@/components/header';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { stores } from '@/data/stores';
 import { type SharedData } from '@/types';
 import { useGSAP } from '@gsap/react';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -19,11 +23,12 @@ export default function Welcome({
 }) {
     const { auth } = usePage<SharedData>().props;
     const [speed, setSpeed] = useState(1);
+    const [hasAnimated, setHasAnimated] = useState(false);
 
     // Refs for GSAP animation targets
     const bigTextRef = useRef<HTMLHeadingElement>(null);
     const bigBgRef = useRef<HTMLDivElement>(null);
-    const headerRef = useRef<HTMLElement>(null);
+    const headerRef = useRef<HTMLDivElement>(null);
     const heroSubtext1Ref = useRef<HTMLHeadingElement>(null);
     const heroSubtext2Ref = useRef<HTMLHeadingElement>(null);
     const heroTitleRef = useRef<HTMLDivElement>(null);
@@ -31,9 +36,31 @@ export default function Welcome({
     const bgRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
+        // Check if animation has already been played in this session
+        const animationPlayed = sessionStorage.getItem(
+            'welcomeAnimationPlayed',
+        );
+
+        if (animationPlayed === 'true') {
+            // Skip animation, show everything immediately
+            gsap.set(bigBgRef.current, { opacity: 0 });
+            gsap.set(bigTextRef.current, { opacity: 0 });
+            gsap.set(headerRef.current, { y: 0, opacity: 1 });
+            gsap.set(heroSubtext1Ref.current, { y: 0, opacity: 1 });
+            gsap.set(heroSubtext2Ref.current, { y: 0, opacity: 1 });
+            gsap.set(heroTitleRef.current, { opacity: 1, y: 0 });
+            gsap.set(contentRef.current, { opacity: 1, y: 0 });
+            setHasAnimated(true);
+            return;
+        }
+
         // GSAP Timeline for smooth intro animation
         const tl = gsap.timeline({
-            // defaults: { ease: 'power1.inOut' },
+            onComplete: () => {
+                // Mark animation as played in session storage
+                sessionStorage.setItem('welcomeAnimationPlayed', 'true');
+                setHasAnimated(true);
+            },
         });
 
         // Initial states
@@ -71,7 +98,7 @@ export default function Welcome({
             )
             // place the label slightly before Group B finishes so
             // header + hero subtexts can start overlapping with the last
-            // big-hero movement (start 'heroReady' 1.2s early)
+            // big-hero movement (start 'heroReady' 0.5s early)
             .addLabel('heroReady', '-=0.5')
             .to(
                 headerRef.current,
@@ -81,7 +108,7 @@ export default function Welcome({
                     duration: 0.6,
                     ease: 'power2.out',
                 },
-                'heroReady', // start 1.8s after previous tween
+                'heroReady',
             )
             .to(
                 heroSubtext1Ref.current,
@@ -141,6 +168,10 @@ export default function Welcome({
                         -ms-overflow-style: none;  /* IE and Edge */
                         scrollbar-width: none;     /* Firefox */
                     }
+                    /* Smooth scroll behavior */
+                    html {
+                        scroll-behavior: smooth;
+                    }
                 `}</style>
             <SidebarProvider>
                 <div className="lg:hidden">
@@ -157,61 +188,10 @@ export default function Welcome({
                         style={{ background: '#F5F1E8' }}
                     />
 
-                    {/* Header/Navigation - Hidden during intro, fades in after animation */}
-                    <header
-                        ref={headerRef}
-                        className="fixed top-0 right-0 left-0 z-50 w-full border-b border-[#593A2F] bg-[rgba(245,241,232,0.25)] font-poppins shadow-[0_8px_30px_rgba(89,58,47,0.05)] backdrop-blur-xl"
-                    >
-                        <div className="mx-auto w-full px-4 py-5 sm:px-8 md:px-20">
-                            <div className="flex items-center justify-between">
-                                {/* Desktop Centered Navigation */}
-                                <nav className="hidden items-center gap-4 lg:flex lg:flex-1 lg:justify-start lg:gap-8">
-                                    <Link
-                                        href="#about"
-                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
-                                    >
-                                        About
-                                    </Link>
-                                    <Link
-                                        href="#stores"
-                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
-                                    >
-                                        Stores
-                                    </Link>
-                                    <Link
-                                        href="#collaborations"
-                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
-                                    >
-                                        Collaborations
-                                    </Link>
-                                    <Link
-                                        href="#contact"
-                                        className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
-                                    >
-                                        Contact
-                                    </Link>
-                                </nav>
-
-                                {/* Right side: Auth links - Desktop only */}
-                                <div className="ml-auto hidden items-center gap-4 lg:flex">
-                                    <span className="text-sm font-medium text-coffee-primary sm:text-base">
-                                        Store admin?{' '}
-                                        <Link
-                                            href={login()}
-                                            className="text-blue-600 underline hover:text-blue-700"
-                                        >
-                                            Login
-                                        </Link>
-                                    </span>
-                                </div>
-
-                                {/* Mobile Sidebar Trigger - Right side */}
-                                <div className="ml-auto lg:hidden">
-                                    <SidebarTrigger className="h-10 w-10 text-coffee-primary hover:bg-[#E8DCC8]" />
-                                </div>
-                            </div>
-                        </div>
-                    </header>
+                    {/* Header/Navigation - Animated wrapper */}
+                    <div ref={headerRef} className="relative z-50">
+                        <Header variant="glassy" />
+                    </div>
 
                     {/* Background Shader - Full page coverage */}
                     <div className="fixed inset-0 z-0 h-full w-full">
@@ -300,7 +280,7 @@ export default function Welcome({
                                 ref={contentRef}
                                 className="mt-8 w-full max-w-xl space-y-6 text-center sm:mt-10 sm:max-w-3xl"
                             >
-                                <p className="text-lg leading-relaxed font-semibold text-[#6B5444] sm:text-2xl md:text-3xl">
+                                <p className="text-lg leading-relaxed font-semibold text-coffee-dark sm:text-2xl md:text-3xl">
                                     Precision in every pour. Passion in every
                                     sip.{' '}
                                     <span className="whitespace-nowrap">
@@ -324,13 +304,190 @@ export default function Welcome({
                         </div>
                     </section>
 
+                    {/* About Section */}
+                    <section
+                        id="about"
+                        className="relative min-h-screen bg-[#F5F1E8] px-6 py-24"
+                    >
+                        {/* Coffee bean pattern background */}
+                        <div
+                            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+                            style={{
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z' fill='%23593A2F' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                                backgroundSize: '60px 60px',
+                            }}
+                        />
+
+                        {/* Subtle gradient overlay */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#E8DCC8]/30 via-transparent to-[#D4C4A8]/20" />
+
+                        <div className="relative z-10 mx-auto w-full max-w-6xl">
+                            {/* Main Heading */}
+                            <div className="mb-12 text-center">
+                                <h2 className="mb-4 text-5xl leading-tight font-black text-coffee-primary uppercase md:text-7xl lg:text-8xl">
+                                    Our Story
+                                </h2>
+                                <div className="mx-auto h-1 w-32 bg-[#8B7355]" />
+                            </div>
+
+                            {/* Content Grid */}
+                            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                                {/* Image */}
+                                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop"
+                                        alt="Coffee artisan at work"
+                                        className="h-[500px] w-full object-cover lg:h-[600px]"
+                                    />
+                                    {/* Subtle overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#593A2F]/20 to-transparent" />
+                                </div>
+
+                                {/* Story Text */}
+                                <div className="space-y-6">
+                                    <div className="space-y-4 font-poppins text-lg leading-relaxed text-[#593A2F] md:text-xl">
+                                        <p className="font-semibold">
+                                            Born from a lifelong passion for the
+                                            perfect cup, Cafe Rencontre was
+                                            founded by coffee connoisseurs who
+                                            have been obsessed with the craft
+                                            since childhood.
+                                        </p>
+                                        <p>
+                                            What started as two young friends
+                                            experimenting with their parents'
+                                            French press evolved into a
+                                            relentless pursuit of coffee
+                                            perfection. We traveled the world,
+                                            studied under master roasters, and
+                                            forged relationships with farmers
+                                            who share our commitment to quality.
+                                        </p>
+                                        <p>
+                                            Today, we bring that same dedication
+                                            to every bean we roast and every cup
+                                            we serve. Our mission is simple: to
+                                            create moments of connection through
+                                            exceptional coffee.
+                                        </p>
+                                        <p className="font-semibold text-[#8B7355] italic">
+                                            "Coffee isn't just what we do—it's
+                                            who we are."
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Achievements Section */}
+                            <div className="mt-20 rounded-3xl bg-gradient-to-br from-[#593A2F] to-[#8B7355] p-8 shadow-2xl md:p-12">
+                                <h3 className="mb-12 text-center text-3xl font-bold text-[#F5F1E8] md:text-4xl">
+                                    Our Journey in Numbers
+                                </h3>
+                                <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
+                                    {/* Years of Experience */}
+                                    <div className="text-center">
+                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                            <CountUp
+                                                to={15}
+                                                duration={2.5}
+                                                delay={0.2}
+                                            />
+                                            <span>+</span>
+                                        </div>
+                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                            Years of
+                                            <br />
+                                            Experience
+                                        </p>
+                                    </div>
+
+                                    {/* Coffee Varieties */}
+                                    <div className="text-center">
+                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                            <CountUp
+                                                to={50}
+                                                duration={2.5}
+                                                delay={0.4}
+                                            />
+                                            <span>+</span>
+                                        </div>
+                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                            Coffee
+                                            <br />
+                                            Varieties
+                                        </p>
+                                    </div>
+
+                                    {/* Daily Cups Served */}
+                                    <div className="text-center">
+                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                            <CountUp
+                                                to={500}
+                                                duration={2.5}
+                                                delay={0.6}
+                                            />
+                                            <span>+</span>
+                                        </div>
+                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                            Daily Cups
+                                            <br />
+                                            Served
+                                        </p>
+                                    </div>
+
+                                    {/* Partner Farms */}
+                                    <div className="text-center">
+                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                            <CountUp
+                                                to={20}
+                                                duration={2.5}
+                                                delay={0.8}
+                                            />
+                                            <span>+</span>
+                                        </div>
+                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                            Partner
+                                            <br />
+                                            Farms
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Stores Section */}
+                    <div id="stores" className="relative bg-[#E8DCC8]">
+                        {/* Coffee bean pattern background */}
+                        <div
+                            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+                            style={{
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 2c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z' fill='%23593A2F' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                                backgroundSize: '60px 60px',
+                            }}
+                        />
+
+                        {/* Subtle gradient overlay */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#D4C4A8]/30 via-transparent to-[#F5F1E8]/20" />
+
+                        <div className="relative z-10">
+                            {/* Gallery4 Carousel - Has its own section wrapper and spacing */}
+                            <Gallery4
+                                title="Our Locations"
+                                description="Each location is thoughtfully designed to create welcoming spaces where communities gather and exceptional coffee brings people together. We're committed to delivering unwavering quality across every branch."
+                                items={stores.map((store) => ({
+                                    id: store.id,
+                                    title: store.name,
+                                    description: store.description,
+                                    href: store.mapLink,
+                                    image: store.image,
+                                }))}
+                            />
+                        </div>
+                    </div>
+
                     {/* Footer */}
-                    <footer className="border-t border-[#593A2F] bg-[rgba(245,241,232,0.25)] px-6 py-6 text-center text-coffee-primary shadow-[0_-8px_30px_rgba(89,58,47,0.05)] backdrop-blur-xl">
-                        <p className="font-poppins text-sm">
-                            &copy; {new Date().getFullYear()} Cafe Rencontre.
-                            All rights reserved.
-                        </p>
-                    </footer>
+                    <Footer />
                 </div>
             </SidebarProvider>
         </>

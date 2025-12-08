@@ -14,6 +14,20 @@ import { ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+// Import coffee images
+import americanoImg from '../../assets/images/americano.png';
+import caramelMacchiatoImg from '../../assets/images/caramel-macchiato.png';
+import hazelnutLatteImg from '../../assets/images/hazelnut-latte.png';
+import icedAmericanoImg from '../../assets/images/iced-americano.png';
+import icedCaramelMacchiatoImg from '../../assets/images/iced-caramel-macchiato.png';
+import icedHazelnutLatteImg from '../../assets/images/iced-hazelnut-latte.png';
+import icedMacchiatoImg from '../../assets/images/iced-macchiato.png';
+import icedSpanishLatteImg from '../../assets/images/iced-spanish-latte.png';
+import icedVanillaLatteImg from '../../assets/images/iced-vanilla-latte.png';
+import macchiatoImg from '../../assets/images/macchiato.png';
+import spanishLatteImg from '../../assets/images/spanish-latte.png';
+import vanillaLatteImg from '../../assets/images/vanilla-latte.png';
+
 function ShopContent() {
     const { auth } = usePage<SharedData>().props;
     const [language, setLanguage] = useState<'EN' | 'PH'>('EN');
@@ -27,42 +41,42 @@ function ShopContent() {
             name: 'Spanish Latte',
             description: 'hot, creamy',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Spanish+Latte',
+            image: spanishLatteImg,
         },
         {
             id: 2,
             name: 'Macchiato',
             description: 'hot, espresso',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Macchiato',
+            image: macchiatoImg,
         },
         {
             id: 3,
             name: 'Hazelnut Latte',
             description: 'hot, nutty',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Hazelnut',
+            image: hazelnutLatteImg,
         },
         {
             id: 4,
             name: 'Americano',
             description: 'hot, bold',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Americano',
+            image: americanoImg,
         },
         {
             id: 5,
             name: 'Caramel Macchiato',
             description: 'hot, sweet',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Caramel',
+            image: caramelMacchiatoImg,
         },
         {
             id: 6,
             name: 'Vanilla Latte',
             description: 'hot, smooth',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Vanilla',
+            image: vanillaLatteImg,
         },
         // Iced Coffee
         {
@@ -70,42 +84,42 @@ function ShopContent() {
             name: 'Iced Spanish Latte',
             description: 'iced, creamy',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Spanish',
+            image: icedSpanishLatteImg,
         },
         {
             id: 8,
             name: 'Iced Macchiato',
             description: 'iced, espresso',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Macchiato',
+            image: icedMacchiatoImg,
         },
         {
             id: 9,
             name: 'Iced Hazelnut Latte',
             description: 'iced, nutty',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Hazelnut',
+            image: icedHazelnutLatteImg,
         },
         {
             id: 10,
             name: 'Iced Americano',
             description: 'iced, bold',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Americano',
+            image: icedAmericanoImg,
         },
         {
             id: 11,
             name: 'Iced Caramel Macchiato',
             description: 'iced, sweet',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Caramel',
+            image: icedCaramelMacchiatoImg,
         },
         {
             id: 12,
             name: 'Iced Vanilla Latte',
             description: 'iced, smooth',
             price: 49,
-            image: 'https://placehold.co/400x400/8B7355/F5F1E8?text=Iced+Vanilla',
+            image: icedVanillaLatteImg,
         },
     ];
 
