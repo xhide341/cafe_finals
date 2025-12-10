@@ -35,11 +35,13 @@ export default function Welcome({
     const contentRef = useRef<HTMLDivElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
 
+    // Always force light mode on mount
     useGSAP(() => {
         // Check if animation has already been played in this session
-        const animationPlayed = sessionStorage.getItem(
-            'welcomeAnimationPlayed',
-        );
+        // const animationPlayed = sessionStorage.getItem(
+        //     'welcomeAnimationPlayed',
+        // );
+        const animationPlayed = String(false);
 
         if (animationPlayed === 'true') {
             // Skip animation, show everything immediately
@@ -58,7 +60,7 @@ export default function Welcome({
         const tl = gsap.timeline({
             onComplete: () => {
                 // Mark animation as played in session storage
-                sessionStorage.setItem('welcomeAnimationPlayed', 'true');
+                // sessionStorage.setItem('welcomeAnimationPlayed', 'true');
                 setHasAnimated(true);
             },
         });
@@ -289,16 +291,12 @@ export default function Welcome({
                                     Just coffee done right.
                                 </p>
                                 <div className="flex flex-col items-center gap-4 pt-4 sm:flex-row sm:flex-wrap sm:justify-center">
-                                    {!auth.user && (
-                                        <>
-                                            <Link
-                                                href="/shop"
-                                                className="rounded-full bg-coffee-primary px-8 py-3 text-base font-medium text-[#F5F1E8] transition-colors hover:bg-coffee-dark hover:text-white sm:px-10 sm:py-4 sm:text-lg"
-                                            >
-                                                View Store
-                                            </Link>
-                                        </>
-                                    )}
+                                    <Link
+                                        href="/shop"
+                                        className="rounded-full bg-coffee-primary px-8 py-3 text-base font-medium text-[#F5F1E8] transition-colors hover:bg-coffee-dark hover:text-white sm:px-10 sm:py-4 sm:text-lg"
+                                    >
+                                        View Store
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -307,7 +305,7 @@ export default function Welcome({
                     {/* About Section */}
                     <section
                         id="about"
-                        className="relative min-h-screen bg-[#F5F1E8] px-6 py-24"
+                        className="relative min-h-screen bg-[#F5F1E8] px-4 py-12 sm:px-6 sm:py-16 md:py-20 lg:py-24"
                     >
                         {/* Coffee bean pattern background */}
                         <div
@@ -323,29 +321,29 @@ export default function Welcome({
 
                         <div className="relative z-10 mx-auto w-full max-w-6xl">
                             {/* Main Heading */}
-                            <div className="mb-12 text-center">
-                                <h2 className="mb-4 text-5xl leading-tight font-black text-coffee-primary uppercase md:text-7xl lg:text-8xl">
+                            <div className="mb-8 text-center sm:mb-10 md:mb-12">
+                                <h2 className="mb-3 text-3xl leading-tight font-black text-coffee-primary uppercase sm:mb-4 sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl">
                                     Our Story
                                 </h2>
-                                <div className="mx-auto h-1 w-32 bg-[#8B7355]" />
+                                <div className="mx-auto h-0.5 w-20 bg-[#8B7355] sm:h-1 sm:w-24 md:w-32" />
                             </div>
 
                             {/* Content Grid */}
-                            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                            <div className="grid items-center gap-6 sm:gap-8 md:gap-10 lg:grid-cols-2 lg:gap-16">
                                 {/* Image */}
-                                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                                <div className="relative overflow-hidden rounded-lg shadow-xl sm:rounded-xl sm:shadow-2xl md:rounded-2xl">
                                     <img
                                         src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop"
                                         alt="Coffee artisan at work"
-                                        className="h-[500px] w-full object-cover lg:h-[600px]"
+                                        className="h-[300px] w-full object-cover sm:h-[400px] md:h-[500px] lg:h-[600px]"
                                     />
                                     {/* Subtle overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#593A2F]/20 to-transparent" />
                                 </div>
 
                                 {/* Story Text */}
-                                <div className="space-y-6">
-                                    <div className="space-y-4 font-poppins text-lg leading-relaxed text-[#593A2F] md:text-xl">
+                                <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                                    <div className="space-y-3 font-poppins text-base leading-relaxed text-[#593A2F] sm:space-y-4 sm:text-lg md:text-xl">
                                         <p className="font-semibold">
                                             Born from a lifelong passion for the
                                             perfect cup, Cafe Rencontre was
@@ -379,14 +377,14 @@ export default function Welcome({
                             </div>
 
                             {/* Achievements Section */}
-                            <div className="mt-20 rounded-3xl bg-gradient-to-br from-[#593A2F] to-[#8B7355] p-8 shadow-2xl md:p-12">
-                                <h3 className="mb-12 text-center text-3xl font-bold text-[#F5F1E8] md:text-4xl">
+                            <div className="mt-12 rounded-2xl bg-gradient-to-br from-[#593A2F] to-[#8B7355] p-6 shadow-xl sm:mt-16 sm:rounded-3xl sm:p-8 md:mt-20 md:shadow-2xl lg:p-12">
+                                <h3 className="mb-8 text-center text-2xl font-bold text-[#F5F1E8] sm:mb-10 sm:text-3xl md:mb-12 md:text-4xl">
                                     Our Journey in Numbers
                                 </h3>
-                                <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
+                                <div className="grid grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4 md:gap-12">
                                     {/* Years of Experience */}
                                     <div className="text-center">
-                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                        <div className="mb-1 text-3xl font-black text-[#F5F1E8] sm:mb-2 sm:text-4xl md:text-5xl lg:text-6xl">
                                             <CountUp
                                                 to={15}
                                                 duration={2.5}
@@ -394,7 +392,7 @@ export default function Welcome({
                                             />
                                             <span>+</span>
                                         </div>
-                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                        <p className="font-poppins text-xs font-medium tracking-wider text-[#E8DCC8] uppercase sm:text-sm md:text-base">
                                             Years of
                                             <br />
                                             Experience
@@ -403,7 +401,7 @@ export default function Welcome({
 
                                     {/* Coffee Varieties */}
                                     <div className="text-center">
-                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                        <div className="mb-1 text-3xl font-black text-[#F5F1E8] sm:mb-2 sm:text-4xl md:text-5xl lg:text-6xl">
                                             <CountUp
                                                 to={50}
                                                 duration={2.5}
@@ -411,7 +409,7 @@ export default function Welcome({
                                             />
                                             <span>+</span>
                                         </div>
-                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                        <p className="font-poppins text-xs font-medium tracking-wider text-[#E8DCC8] uppercase sm:text-sm md:text-base">
                                             Coffee
                                             <br />
                                             Varieties
@@ -420,7 +418,7 @@ export default function Welcome({
 
                                     {/* Daily Cups Served */}
                                     <div className="text-center">
-                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                        <div className="mb-1 text-3xl font-black text-[#F5F1E8] sm:mb-2 sm:text-4xl md:text-5xl lg:text-6xl">
                                             <CountUp
                                                 to={500}
                                                 duration={2.5}
@@ -428,7 +426,7 @@ export default function Welcome({
                                             />
                                             <span>+</span>
                                         </div>
-                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                        <p className="font-poppins text-xs font-medium tracking-wider text-[#E8DCC8] uppercase sm:text-sm md:text-base">
                                             Daily Cups
                                             <br />
                                             Served
@@ -437,7 +435,7 @@ export default function Welcome({
 
                                     {/* Partner Farms */}
                                     <div className="text-center">
-                                        <div className="mb-2 text-5xl font-black text-[#F5F1E8] md:text-6xl">
+                                        <div className="mb-1 text-3xl font-black text-[#F5F1E8] sm:mb-2 sm:text-4xl md:text-5xl lg:text-6xl">
                                             <CountUp
                                                 to={20}
                                                 duration={2.5}
@@ -445,7 +443,7 @@ export default function Welcome({
                                             />
                                             <span>+</span>
                                         </div>
-                                        <p className="font-poppins text-sm font-medium tracking-wider text-[#E8DCC8] uppercase md:text-base">
+                                        <p className="font-poppins text-xs font-medium tracking-wider text-[#E8DCC8] uppercase sm:text-sm md:text-base">
                                             Partner
                                             <br />
                                             Farms

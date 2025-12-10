@@ -193,9 +193,9 @@
     --sidebar-ring: oklch(0.439 0 0);
 
     --coffee-primary: oklch(0.55 0.13 30); /* #7a584a */
-    --coffee-light: oklch(59.01% 0.13901 29.48); /* #a17d6d */
+    --coffee-light: oklch(0.4911 0.13 30); /* #a17d6d */
     --coffee-lighter: oklch(0.8 0.09 30); /* #c9a896 */
-    --coffee-dark: oklch(0.38 0.14 30); /* #593a2f */
+    --coffee-dark: oklch(0.4525 0.13 30); /* #593a2f */
     --coffee-darker: oklch(0.25 0.13 30); /* #3e2720 */
     --coffee-foreground: oklch(0.98 0.01 30); /* #fdf8f5 */
     --coffee-accent: oklch(0.72 0.12 30); /* #a17d6d */

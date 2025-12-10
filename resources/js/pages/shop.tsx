@@ -1,5 +1,7 @@
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { GuestMenuContent } from '@/components/guest-menu-content';
+import { ProductDetailsSheet } from '@/components/product-details-sheet';
+import { ReceiptDialog } from '@/components/receipt-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,134 +10,69 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CartProvider, useCart } from '@/contexts/cart-context';
-import { type Product, type SharedData } from '@/types';
+import {
+    type CartItem,
+    type Product,
+    type ProductCustomization,
+    type SharedData,
+} from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import cafeLogo from '../../assets/images/cafe-logo.png';
+import { ShopHeader } from '@/components/shop-header';
 
 // Import coffee images
-import americanoImg from '../../assets/images/americano.png';
-import caramelMacchiatoImg from '../../assets/images/caramel-macchiato.png';
-import hazelnutLatteImg from '../../assets/images/hazelnut-latte.png';
-import icedAmericanoImg from '../../assets/images/iced-americano.png';
-import icedCaramelMacchiatoImg from '../../assets/images/iced-caramel-macchiato.png';
-import icedHazelnutLatteImg from '../../assets/images/iced-hazelnut-latte.png';
-import icedMacchiatoImg from '../../assets/images/iced-macchiato.png';
-import icedSpanishLatteImg from '../../assets/images/iced-spanish-latte.png';
-import icedVanillaLatteImg from '../../assets/images/iced-vanilla-latte.png';
-import macchiatoImg from '../../assets/images/macchiato.png';
-import spanishLatteImg from '../../assets/images/spanish-latte.png';
-import vanillaLatteImg from '../../assets/images/vanilla-latte.png';
 
 function ShopContent() {
     const { auth } = usePage<SharedData>().props;
     const [language, setLanguage] = useState<'EN' | 'PH'>('EN');
-    const { addItem, getTotalItems } = useCart();
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
+        null,
+    );
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const [receiptOpen, setReceiptOpen] = useState(false);
+    const [singlePurchaseItem, setSinglePurchaseItem] =
+        useState<CartItem | null>(null);
+    const { addItem, getTotalItems, confirmPurchase } = useCart();
 
-    // Coffee products from menu
-    const products: Product[] = [
-        // Hot Coffee
-        {
-            id: 1,
-            name: 'Spanish Latte',
-            description: 'hot, creamy',
-            price: 49,
-            image: spanishLatteImg,
-        },
-        {
-            id: 2,
-            name: 'Macchiato',
-            description: 'hot, espresso',
-            price: 49,
-            image: macchiatoImg,
-        },
-        {
-            id: 3,
-            name: 'Hazelnut Latte',
-            description: 'hot, nutty',
-            price: 49,
-            image: hazelnutLatteImg,
-        },
-        {
-            id: 4,
-            name: 'Americano',
-            description: 'hot, bold',
-            price: 49,
-            image: americanoImg,
-        },
-        {
-            id: 5,
-            name: 'Caramel Macchiato',
-            description: 'hot, sweet',
-            price: 49,
-            image: caramelMacchiatoImg,
-        },
-        {
-            id: 6,
-            name: 'Vanilla Latte',
-            description: 'hot, smooth',
-            price: 49,
-            image: vanillaLatteImg,
-        },
-        // Iced Coffee
-        {
-            id: 7,
-            name: 'Iced Spanish Latte',
-            description: 'iced, creamy',
-            price: 49,
-            image: icedSpanishLatteImg,
-        },
-        {
-            id: 8,
-            name: 'Iced Macchiato',
-            description: 'iced, espresso',
-            price: 49,
-            image: icedMacchiatoImg,
-        },
-        {
-            id: 9,
-            name: 'Iced Hazelnut Latte',
-            description: 'iced, nutty',
-            price: 49,
-            image: icedHazelnutLatteImg,
-        },
-        {
-            id: 10,
-            name: 'Iced Americano',
-            description: 'iced, bold',
-            price: 49,
-            image: icedAmericanoImg,
-        },
-        {
-            id: 11,
-            name: 'Iced Caramel Macchiato',
-            description: 'iced, sweet',
-            price: 49,
-            image: icedCaramelMacchiatoImg,
-        },
-        {
-            id: 12,
-            name: 'Iced Vanilla Latte',
-            description: 'iced, smooth',
-            price: 49,
-            image: icedVanillaLatteImg,
-        },
-    ];
+    // Products from backend
+    const { products: rawProducts } = usePage<SharedData>().props;
+    const products: Product[] = Array.isArray(rawProducts) ? rawProducts : [];
 
-    const handleAddToCart = (product: Product) => {
-        addItem(product, 1);
+    const handleProductClick = (product: Product) => {
+        setSelectedProduct(product);
+        setSheetOpen(true);
+    };
+
+    const handleAddToCart = (
+        product: Product,
+        quantity: number,
+        customizations: ProductCustomization,
+    ) => {
         toast.success(`${product.name} added to cart!`);
     };
 
-    // Convert PHP to USD (approximate rate: 1 USD = 56 PHP)
-    const convertPrice = (price: number) => {
-        if (language === 'EN') {
-            return (price / 56).toFixed(2);
-        }
-        return price.toFixed(2);
+    const handleConfirmPurchase = (
+        product: Product,
+        quantity: number,
+        customizations: ProductCustomization,
+    ) => {
+        const purchaseItem = confirmPurchase(product, quantity, customizations);
+        setSinglePurchaseItem(purchaseItem);
+        setSheetOpen(false);
+        setReceiptOpen(true);
     };
 
+    // Convert PHP to USD (approximate rate: 1 USD = 56 PHP)
+    const convertPrice = (price: number | string) => {
+        const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+        if (language === 'EN') {
+            return (numPrice / 56).toFixed(2);
+        }
+        return numPrice.toFixed(2);
+    };
     const getCurrencySymbol = () => {
         return language === 'EN' ? '$' : '₱';
     };
@@ -145,88 +82,13 @@ function ShopContent() {
             <Head title="Coffee Shop - Cafe Rencontre" />
             <div className="min-h-screen w-full bg-background">
                 {/* Header */}
-                <header className="max-w-8xl sticky top-0 z-50 mx-auto w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-                    <div className="flex h-16 items-center justify-between px-6">
-                        {/* Logo */}
-                        <Link href="/" className="flex items-center gap-3">
-                            <img
-                                src="https://placehold.co/40x40/8B7355/F5F1E8?text=CR"
-                                alt="Cafe Logo"
-                                className="h-10 w-10 rounded-full border-2 border-primary"
-                            />
-                            <span className="font-cursive text-xl font-bold text-coffee-primary">
-                                Cafe Rencontre
-                            </span>
-                        </Link>
-
-                        {/* Right Side Actions */}
-                        <div className="flex items-center gap-4">
-                            {/* Theme Toggle */}
-                            <AppearanceToggleDropdown />
-
-                            {/* Language Selector */}
-                            <div className="flex items-center gap-1 rounded-lg border bg-muted p-1">
-                                <Button
-                                    variant={
-                                        language === 'EN' ? 'default' : 'ghost'
-                                    }
-                                    size="sm"
-                                    onClick={() => setLanguage('EN')}
-                                    disabled={language === 'EN'}
-                                    className="h-8 px-3"
-                                >
-                                    EN
-                                </Button>
-                                <Button
-                                    variant={
-                                        language === 'PH' ? 'default' : 'ghost'
-                                    }
-                                    size="sm"
-                                    onClick={() => setLanguage('PH')}
-                                    disabled={language === 'PH'}
-                                    className="h-8 px-3"
-                                >
-                                    PH
-                                </Button>
-                            </div>
-
-                            {/* Cart */}
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="relative"
-                                asChild
-                            >
-                                <Link href="/cart">
-                                    <ShoppingCart className="h-5 w-5" />
-                                    {getTotalItems() > 0 && (
-                                        <Badge
-                                            variant="destructive"
-                                            className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
-                                        >
-                                            {getTotalItems()}
-                                        </Badge>
-                                    )}
-                                </Link>
-                            </Button>
-
-                            {/* Profile Dropdown */}
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <User className="h-5 w-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-56"
-                                >
-                                    <GuestMenuContent user={auth.user} />
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                    </div>
-                </header>
+                <ShopHeader
+                    cafeLogo={cafeLogo}
+                    language={language}
+                    setLanguage={setLanguage}
+                    getTotalItems={getTotalItems}
+                    auth={auth}
+                />
 
                 {/* Hero Section */}
                 <section className="border-b bg-gradient-to-b from-muted/50 to-background py-12">
@@ -252,12 +114,20 @@ function ShopContent() {
                                 <div
                                     key={product.id}
                                     className="group mx-2.5 my-5 w-full max-w-[600px] cursor-pointer overflow-hidden bg-card transition-transform"
-                                    onClick={() => handleAddToCart(product)}
+                                    onClick={() => handleProductClick(product)}
                                 >
                                     {/* Product Image - Maintains aspect ratio */}
                                     <div className="aspect-[600/756] w-full overflow-hidden bg-muted">
                                         <img
-                                            src={product.image}
+                                            src={
+                                                typeof product.image ===
+                                                    'string' &&
+                                                !product.image.startsWith(
+                                                    'http',
+                                                )
+                                                    ? `/assets/images/${product.image}`
+                                                    : product.image
+                                            }
                                             alt={product.name}
                                             className="h-full w-full object-cover"
                                         />
@@ -268,17 +138,17 @@ function ShopContent() {
                                         <div className="flex items-start justify-between gap-4 md:gap-8 lg:gap-12">
                                             {/* Left side: Title and Description */}
                                             <div className="min-w-0 flex-1">
-                                                <h3 className="truncate text-2xl leading-tight font-extrabold text-card-foreground select-none">
+                                                <h3 className="truncate text-2xl leading-tight font-extrabold text-coffee-dark select-none dark:text-primary">
                                                     {product.name}
                                                 </h3>
-                                                <p className="ml-0.2 mt-1 line-clamp-2 font-poppins text-lg leading-tight font-medium text-muted-foreground lowercase select-none">
+                                                <p className="ml-0.2 mt-1 line-clamp-2 font-poppins text-lg leading-tight font-medium text-coffee-light lowercase select-none dark:text-muted-foreground">
                                                     {product.description}
                                                 </p>
                                             </div>
 
                                             {/* Right side: Price */}
                                             <div className="relative flex-shrink-0 self-end">
-                                                <span className="relative z-10 text-lg font-bold whitespace-nowrap text-primary select-none">
+                                                <span className="relative z-10 text-lg font-bold whitespace-nowrap text-coffee-primary select-none dark:text-primary">
                                                     {getCurrencySymbol()}
                                                     {convertPrice(
                                                         product.price,
@@ -305,6 +175,23 @@ function ShopContent() {
                     </div>
                 </footer>
             </div>
+
+            {/* Product Details Sidebar */}
+            <ProductDetailsSheet
+                product={selectedProduct}
+                open={sheetOpen}
+                onOpenChange={setSheetOpen}
+                onAddToCart={handleAddToCart}
+                onConfirmPurchase={handleConfirmPurchase}
+                language={language}
+            />
+
+            {/* Receipt Dialog */}
+            <ReceiptDialog
+                open={receiptOpen}
+                onOpenChange={setReceiptOpen}
+                singleItem={singlePurchaseItem}
+            />
         </>
     );
 }

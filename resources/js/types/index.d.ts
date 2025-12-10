@@ -42,6 +42,15 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface UserManagement extends User {
+    status: 'active' | 'inactive' | 'suspended';
+    last_order_date: string | null;
+    total_orders: number;
+    total_spent: number;
+    newsletter_subscribed: boolean;
+    last_login_at: string | null;
+}
+
 export interface Product {
     id: number;
     name: string;
@@ -50,9 +59,26 @@ export interface Product {
     image: string;
 }
 
+export interface ProductAddOn {
+    id: string;
+    name: string;
+    price: number;
+}
+
+export interface ProductCustomization {
+    size: 'small' | 'medium' | 'large';
+    temperature?: 'hot' | 'iced';
+    sugarLevel: number; // 0-100 slider value
+    milkOption: 'none' | 'regular' | 'oat' | 'almond';
+    extraShot: boolean;
+    whippedCream: boolean;
+    cinnamonPowder: boolean;
+}
+
 export interface CartItem {
     product: Product;
     quantity: number;
+    customizations?: ProductCustomization;
 }
 
 export interface Cart {
@@ -79,4 +105,21 @@ export interface Store {
     city: string;
     image: string;
     mapLink: string;
+}
+
+export interface Order {
+    id: number;
+    user_id: number | null;
+    product_name: string;
+    description: string;
+    product_image: string | null;
+    quantity: number;
+    price: string;
+    total_amount: string;
+    status: 'pending' | 'accepted' | 'declined' | 'cancelled';
+    customer_notes: string | null;
+    ordered_at: string;
+    created_at: string;
+    updated_at: string;
+    user?: User;
 }

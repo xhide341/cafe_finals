@@ -6,6 +6,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { useCart } from '@/contexts/cart-context';
+import type { CartItem } from '@/types';
 import { router } from '@inertiajs/react';
 import { Printer } from 'lucide-react';
 import { useRef } from 'react';
@@ -14,11 +15,35 @@ import { toast } from 'sonner';
 interface ReceiptDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    singleItem?: CartItem | null;
 }
 
-export function ReceiptDialog({ open, onOpenChange }: ReceiptDialogProps) {
-    const { items, getSubtotal, getTax, getTotal, clearCart } = useCart();
+export function ReceiptDialog({
+    open,
+    onOpenChange,
+    singleItem,
+}: ReceiptDialogProps) {
+    const { items, getSubtotal, getTax, getTotal, clearCart, getItemPrice } =
+        useCart();
     const receiptRef = useRef<HTMLDivElement>(null);
+
+    // Use singleItem if provided, otherwise use cart items
+    const receiptItems = singleItem ? [singleItem] : items;
+
+    const calculateReceiptSubtotal = () => {
+        if (singleItem) {
+            return getItemPrice(singleItem) * singleItem.quantity;
+        }
+        return getSubtotal();
+    };
+
+    const calculateReceiptTax = () => {
+        return calculateReceiptSubtotal() * 0.12;
+    };
+
+    const calculateReceiptTotal = () => {
+        return calculateReceiptSubtotal() + calculateReceiptTax();
+    };
 
     const orderNumber = `CR-${Date.now().toString().slice(-8)}`;
     const orderDate = new Date().toLocaleString('en-US', {
@@ -145,9 +170,55 @@ export function ReceiptDialog({ open, onOpenChange }: ReceiptDialogProps) {
         toast.success('Order placed successfully!', {
             description: `Order #${orderNumber} has been confirmed`,
         });
-        clearCart();
+        if (!singleItem) {
+            clearCart();
+        }
         onOpenChange(false);
         router.visit('/shop');
+    };
+
+    // Helper to format customization details
+    const formatCustomizations = (item: CartItem) => {
+        if (!item.customizations) return null;
+
+        const details: string[] = [];
+        const c = item.customizations;
+
+        // Size
+        details.push(
+            `${c.size.charAt(0).toUpperCase() + c.size.slice(1)} (${
+                c.size === 'small'
+                    ? '12oz'
+                    : c.size === 'medium'
+                      ? '16oz'
+                      : '20oz'
+            })`,
+        );
+
+        // Sugar (now a percentage)
+        details.push(`Sugar: ${c.sugarLevel}%`);
+
+        // Milk
+        const milkLabels = {
+            none: 'No Milk',
+            regular: 'Regular Milk',
+            oat: 'Oat Milk',
+            almond: 'Almond Milk',
+        };
+        details.push(milkLabels[c.milkOption]);
+
+        // Add-ons
+        if (c.extraShot) {
+            details.push('Extra Shot');
+        }
+        if (c.whippedCream) {
+            details.push('Whipped Cream');
+        }
+        if (c.cinnamonPowder) {
+            details.push('Cinnamon Powder');
+        }
+
+        return details.join(', ');
     };
 
     return (
@@ -197,37 +268,50 @@ export function ReceiptDialog({ open, onOpenChange }: ReceiptDialogProps) {
                                 Price
                             </div>
                         </div>
-                        {items.map((item) => (
-                            <div key={item.product.id} className="item flex">
-                                <div className="item-name flex-1 text-xs">
-                                    {item.product.name}
+                        {receiptItems.map((item, index) => {
+                            const itemTotal =
+                                getItemPrice(item) * item.quantity;
+                            const customizationText =
+                                formatCustomizations(item);
+
+                            return (
+                                <div key={index} className="mb-3">
+                                    <div className="item flex">
+                                        <div className="item-name flex-1 text-xs">
+                                            {item.product.name}
+                                        </div>
+                                        <div className="item-qty w-10 text-center text-xs">
+                                            {item.quantity}
+                                        </div>
+                                        <div className="item-price w-20 text-right text-xs">
+                                            ₱{itemTotal.toFixed(2)}
+                                        </div>
+                                    </div>
+                                    {customizationText && (
+                                        <div className="ml-2 text-[10px] text-gray-600">
+                                            {customizationText}
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="item-qty w-10 text-center text-xs">
-                                    {item.quantity}
-                                </div>
-                                <div className="item-price w-20 text-right text-xs">
-                                    ₱
-                                    {(
-                                        item.product.price * item.quantity
-                                    ).toFixed(2)}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     {/* Totals */}
                     <div className="totals border-t-2 border-dashed border-black pt-4">
                         <div className="total-row flex justify-between text-xs">
                             <span>Subtotal:</span>
-                            <span>₱{getSubtotal().toFixed(2)}</span>
+                            <span>
+                                ₱{calculateReceiptSubtotal().toFixed(2)}
+                            </span>
                         </div>
                         <div className="total-row flex justify-between text-xs">
                             <span>Tax (12%):</span>
-                            <span>₱{getTax().toFixed(2)}</span>
+                            <span>₱{calculateReceiptTax().toFixed(2)}</span>
                         </div>
                         <div className="total-row final flex justify-between border-t border-black pt-2 text-base font-bold">
                             <span>TOTAL:</span>
-                            <span>₱{getTotal().toFixed(2)}</span>
+                            <span>₱{calculateReceiptTotal().toFixed(2)}</span>
                         </div>
                     </div>
 

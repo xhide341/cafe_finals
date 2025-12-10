@@ -1,28 +1,15 @@
-import AppearanceToggleDropdown from '@/components/appearance-dropdown';
-import { GuestMenuContent } from '@/components/guest-menu-content';
 import { ReceiptDialog } from '@/components/receipt-dialog';
-import { Badge } from '@/components/ui/badge';
+import { ShopHeader } from '@/components/shop-header';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { CartProvider, useCart } from '@/contexts/cart-context';
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    ArrowLeft,
-    Minus,
-    Plus,
-    ShoppingCart,
-    Trash2,
-    User,
-} from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 function CartContent() {
+    const [language, setLanguage] = useState<'EN' | 'PH'>('EN');
     const { auth } = usePage<SharedData>().props;
     const {
         items,
@@ -52,67 +39,65 @@ function CartContent() {
         }
     };
 
+    const { clearCart } = useCart();
+
+    const handlePlaceOrder = () => {
+        if (items.length === 0) return;
+
+        items.forEach((item, idx) => {
+            router.post(
+                '/orders',
+                {
+                    product_name: item.product.name,
+                    description: item.product.description,
+                    product_image: item.product.image,
+                    quantity: item.quantity,
+                    price: item.product.price,
+                    total_amount: (item.product.price * item.quantity).toFixed(
+                        2,
+                    ),
+                    customer_notes: '',
+                    ordered_at: new Date().toISOString(),
+                },
+                {
+                    onSuccess: () => {
+                        if (idx === items.length - 1) {
+                            clearCart();
+                            toast.success('Order placed!');
+                        }
+                    },
+                    onError: () => {
+                        toast.error('Failed to place order.');
+                    },
+                },
+            );
+        });
+    };
+
+    // Convert PHP to USD (approximate rate: 1 USD = 56 PHP)
+    const convertPrice = (price: number | string) => {
+        const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+        if (language === 'EN') {
+            return (numPrice / 56).toFixed(2);
+        }
+        return numPrice.toFixed(2);
+    };
+    const getCurrencySymbol = () => {
+        return language === 'EN' ? '$' : '₱';
+    };
+
     return (
         <>
             <Head title="Shopping Cart - Cafe Rencontre" />
             <div className="flex min-h-screen w-full flex-col bg-background">
                 {/* Header */}
-                <header className="max-w-8xl sticky top-0 z-50 mx-auto w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-                    <div className="flex h-16 items-center justify-between px-6">
-                        {/* Logo */}
-                        <Link href="/shop" className="flex items-center gap-3">
-                            <img
-                                src="https://placehold.co/40x40/8B7355/F5F1E8?text=CR"
-                                alt="Cafe Logo"
-                                className="h-10 w-10 rounded-full border-2 border-primary"
-                            />
-                            <span className="font-cursive text-xl font-bold text-primary">
-                                Cafe Rencontre
-                            </span>
-                        </Link>
-
-                        {/* Right Side Actions */}
-                        <div className="flex items-center gap-4">
-                            {/* Theme Toggle */}
-                            <AppearanceToggleDropdown />
-
-                            {/* Cart */}
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="relative"
-                                asChild
-                            >
-                                <Link href="/cart">
-                                    <ShoppingCart className="h-5 w-5" />
-                                    {getTotalItems() > 0 && (
-                                        <Badge
-                                            variant="destructive"
-                                            className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
-                                        >
-                                            {getTotalItems()}
-                                        </Badge>
-                                    )}
-                                </Link>
-                            </Button>
-
-                            {/* Profile Dropdown */}
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <User className="h-5 w-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-56"
-                                >
-                                    <GuestMenuContent user={auth.user} />
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                    </div>
-                </header>
+                <ShopHeader
+                    cafeLogo={'/assets/images/cafe-logo.png'}
+                    language={language}
+                    setLanguage={setLanguage}
+                    getTotalItems={getTotalItems}
+                    auth={auth}
+                />
 
                 {/* Cart Content */}
                 <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-12">
@@ -151,7 +136,15 @@ function CartContent() {
                                         className="flex gap-4 rounded-lg border bg-card p-4"
                                     >
                                         <img
-                                            src={item.product.image}
+                                            src={
+                                                typeof item.product.image ===
+                                                    'string' &&
+                                                !item.product.image.startsWith(
+                                                    'http',
+                                                )
+                                                    ? `/assets/images/${item.product.image}`
+                                                    : item.product.image
+                                            }
                                             alt={item.product.name}
                                             className="h-24 w-24 rounded-md object-cover"
                                         />
@@ -200,16 +193,16 @@ function CartContent() {
                                                 </div>
                                                 <div className="flex items-center gap-4">
                                                     <span className="font-bold text-primary">
-                                                        ₱
-                                                        {(
+                                                        {getCurrencySymbol()}
+                                                        {convertPrice(
                                                             item.product.price *
-                                                            item.quantity
-                                                        ).toFixed(2)}
+                                                                item.quantity,
+                                                        )}
                                                     </span>
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-8 w-8 text-destructive hover:text-destructive"
+                                                        className="h-8 w-8 cursor-pointer bg-destructive text-white hover:bg-red-500 hover:text-primary-foreground dark:text-primary hover:dark:bg-red-800"
                                                         onClick={() =>
                                                             handleRemoveItem(
                                                                 item.product.id,
@@ -237,26 +230,30 @@ function CartContent() {
                                         <div className="flex justify-between text-muted-foreground">
                                             <span>Subtotal</span>
                                             <span>
-                                                ₱{getSubtotal().toFixed(2)}
+                                                {getCurrencySymbol()}
+                                                {convertPrice(getSubtotal())}
                                             </span>
                                         </div>
                                         <div className="flex justify-between text-muted-foreground">
                                             <span>Tax (12%)</span>
-                                            <span>₱{getTax().toFixed(2)}</span>
+                                            <span>
+                                                {getCurrencySymbol()}
+                                                {convertPrice(getTax())}
+                                            </span>
                                         </div>
                                     </div>
                                     <div className="flex justify-between pt-4 text-lg font-bold">
                                         <span>Total</span>
                                         <span className="text-primary">
-                                            ₱{getTotal().toFixed(2)}
+                                            {getCurrencySymbol()}
+                                            {convertPrice(getTotal())}
                                         </span>
                                     </div>
                                     <Button
                                         className="mt-6 w-full"
                                         size="lg"
-                                        onClick={() =>
-                                            setReceiptDialogOpen(true)
-                                        }
+                                        variant="coffee"
+                                        onClick={handlePlaceOrder}
                                     >
                                         Proceed to Checkout
                                     </Button>

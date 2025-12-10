@@ -16,31 +16,53 @@ export function Header({ variant = 'glassy' }: HeaderProps) {
 
     return (
         <header className={`${baseClasses} ${variantClasses}`}>
+            {/* Custom underline animation styles */}
+            <style>{`
+                .nav-underline {
+                    position: relative;
+                    overflow: visible;
+                }
+                .nav-underline::after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: -2px;
+                    width: 0;
+                    height: 2px;
+                    background: #8B7355;
+                    transition: width 0.35s cubic-bezier(.4,0,.2,1), left 0.35s cubic-bezier(.4,0,.2,1);
+                    z-index: 1;
+                }
+                .nav-underline:hover::after {
+                    width: 100%;
+                    left: 0;
+                }
+            `}</style>
             <div className="mx-auto w-full px-4 py-5 sm:px-8 md:px-20">
                 <div className="flex items-center justify-between">
                     {/* Desktop Centered Navigation */}
                     <nav className="hidden items-center gap-4 lg:flex lg:flex-1 lg:justify-start lg:gap-8">
                         <Link
                             href="/"
-                            className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                            className="nav-underline text-lg font-medium text-coffee-primary hover:text-coffee-dark"
                         >
                             Home
                         </Link>
                         <Link
                             href="#about"
-                            className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                            className="nav-underline text-lg font-medium text-coffee-primary hover:text-coffee-dark"
                         >
                             About
                         </Link>
                         <Link
                             href="#stores"
-                            className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                            className="nav-underline text-lg font-medium text-coffee-primary hover:text-coffee-dark"
                         >
                             Stores
                         </Link>
                         <Link
                             href="#contact"
-                            className="text-lg font-medium text-coffee-primary hover:text-[#6B5444]"
+                            className="nav-underline text-lg font-medium text-coffee-primary hover:text-coffee-dark"
                         >
                             Contact
                         </Link>
@@ -52,7 +74,7 @@ export function Header({ variant = 'glassy' }: HeaderProps) {
                             Store admin?{' '}
                             <Link
                                 href={login()}
-                                className="text-blue-600 underline hover:text-blue-700"
+                                className="text-blue-700 underline hover:text-blue-800"
                             >
                                 Login
                             </Link>
